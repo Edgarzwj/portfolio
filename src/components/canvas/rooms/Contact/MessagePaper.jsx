@@ -214,13 +214,13 @@ const scoreWord = (word) => {
 };
 
 // Main content analyzer — scores every word and computes an aggregate
-const analyzeContentAI = (text) => {
-    if (!text || text.trim().length < 3) return { isSpam: true, reason: 'Message too short' };
+const analyzeContentAI = (text, isSubject = false) => {
+    if (!text || text.trim().length < (isSubject ? 2 : 3)) return { isSpam: true, reason: 'Message too short' };
 
     const cleaned = text.trim();
 
-    // Single-word messages under 15 chars without a space are suspicious
-    if (cleaned.length <= 15 && !cleaned.includes(' ')) {
+    // Single-word messages under 15 chars without a space are suspicious (but completely normal for subjects)
+    if (!isSubject && cleaned.length <= 15 && !cleaned.includes(' ')) {
         // Allow common short messages like "hello", "thanks", "cool", "nice", "hi there"
         const commonShort = /^(hi|hey|hello|thanks|thank you|cool|nice|ok|okay|yes|no|sup|yo|cheers|hej|cześć|dzięki|siema|elo)$/i;
         if (!commonShort.test(cleaned)) {
@@ -416,8 +416,8 @@ const MessagePaper = ({ position = [0, 0.05, 2], onSend }) => {
             }
 
             // --- 2. Modern 2026 AI Content Verification ---
-            const subjectAnalysis = analyzeContentAI(subject);
-            const messageAnalysis = analyzeContentAI(message);
+            const subjectAnalysis = analyzeContentAI(subject, true);
+            const messageAnalysis = analyzeContentAI(message, false);
 
             if (subjectAnalysis.isSpam || messageAnalysis.isSpam) {
                 setErrors({ message: 'Our AI flagged this as spam. Please write clearly.' });
