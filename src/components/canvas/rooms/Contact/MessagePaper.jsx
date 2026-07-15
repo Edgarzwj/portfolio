@@ -149,6 +149,40 @@ const SmoothButton = ({ texture, onClick, position, size, text, fontPath }) => {
 // Web3Forms API Key
 const WEB3FORMS_KEY = '2ceaee50-a31e-4936-98fc-ca9648b21cdd';
 
+// Modern 2026 AI-based content analyzer heuristic
+const analyzeContentAI = (text) => {
+    if (!text || text.length < 5) return { isSpam: false };
+
+    const lowerText = text.toLowerCase();
+
+    // 1. Check for keyboard mashing patterns
+    const mashingPatterns = /(asdf|qwer|zxcv|awd|dawd|wasd|1234|test)/i;
+    if (mashingPatterns.test(lowerText)) return { isSpam: true, reason: 'Keyboard mashing detected' };
+
+    // 2. Check for lack of vowels or excessive consonants
+    const consonantClusters = /[bcdfghjklmnpqrstvwxyz]{6,}/i;
+    if (consonantClusters.test(lowerText.replace(/\s/g, ''))) return { isSpam: true, reason: 'Unnatural character sequences' };
+
+    // 3. Repetitive content / Low entropy
+    const noSpaceText = lowerText.replace(/\s/g, '');
+    if (noSpaceText.length > 10) {
+        const uniqueChars = new Set(noSpaceText).size;
+        if ((uniqueChars / noSpaceText.length) < 0.3) {
+            return { isSpam: true, reason: 'Low entropy content' };
+        }
+    }
+
+    // 4. Unnaturally long words (often gibberish)
+    const words = text.split(/\s+/);
+    const hasUnnaturallyLongWord = words.some(word => word.length > 20 && !word.includes('http'));
+    if (hasUnnaturallyLongWord) {
+        return { isSpam: true, reason: 'Unnatural word length' };
+    }
+
+    return { isSpam: false };
+};
+
+
 const MessagePaper = ({ position = [0, 0.05, 2], onSend }) => {
     const groupRef = useRef();
     const paperRef = useRef();
@@ -163,6 +197,7 @@ const MessagePaper = ({ position = [0, 0.05, 2], onSend }) => {
     const [subject, setSubject] = useState('');
     const [activeField, setActiveField] = useState(null);
     const [cursorVisible, setCursorVisible] = useState(true);
+    const [botcheck, setBotcheck] = useState(''); // Honeypot state
 
     // Validation & Submit State
     const [errors, setErrors] = useState({});
@@ -235,6 +270,45 @@ const MessagePaper = ({ position = [0, 0.05, 2], onSend }) => {
         setErrors({});
 
         try {
+            // --- 1. Honeypot check (Silent block) ---
+            if (botcheck) {
+                // If botcheck is filled out, act like it succeeded to fool the bot
+                setSubmitStatus('success');
+                setIsSubmitting(false);
+                return;
+            }
+
+            // --- 2. Modern 2026 AI Content Verification ---
+            const subjectAnalysis = analyzeContentAI(subject);
+            const messageAnalysis = analyzeContentAI(message);
+
+            if (subjectAnalysis.isSpam || messageAnalysis.isSpam) {
+                setErrors({ message: 'Our AI flagged this as spam. Please write clearly.' });
+                setIsSubmitting(false);
+                return;
+            }
+
+            // --- 3. Email Domain MX Record Validation (DoH) ---
+            const domain = email.split('@')[1];
+            if (domain) {
+                try {
+                    const dnsRes = await fetch(`https://cloudflare-dns.com/dns-query?name=${domain}&type=MX`, {
+                        headers: { 'Accept': 'application/dns-json' }
+                    });
+                    const dnsData = await dnsRes.json();
+                    
+                    // Status 0 is NOERROR. If no MX records (type 15), domain can't receive mail.
+                    // Status 3 is NXDOMAIN (domain doesn't exist at all).
+                    if (dnsData.Status === 3 || (dnsData.Status === 0 && (!dnsData.Answer || !dnsData.Answer.some(a => a.type === 15)))) {
+                        setErrors({ email: 'Domain does not exist or cannot receive emails.' });
+                        setIsSubmitting(false);
+                        return;
+                    }
+                } catch (dnsErr) {
+                    console.warn('DNS validation failed, bypassing...', dnsErr);
+                }
+            }
+
             const response = await fetch('https://api.web3forms.com/submit', {
                 method: 'POST',
                 headers: {
@@ -281,6 +355,9 @@ const MessagePaper = ({ position = [0, 0.05, 2], onSend }) => {
     }, []);
     const handleSubjectInput = useCallback((e) => {
         if (e.target.value.length <= 50) setSubject(e.target.value);
+    }, []);
+    const handleBotcheckInput = useCallback((e) => {
+        setBotcheck(e.target.checked);
     }, []);
 
     const handleBlur = useCallback(() => {
@@ -349,6 +426,7 @@ const MessagePaper = ({ position = [0, 0.05, 2], onSend }) => {
                 <textarea ref={hiddenInputRef} value={message} onChange={handleMessageInput} onBlur={handleBlur} aria-label="Message" style={{ pointerEvents: 'auto' }} />
                 <input ref={emailInputRef} type="email" value={email} onChange={handleEmailInput} onBlur={handleBlur} aria-label="Email" style={{ pointerEvents: 'auto' }} />
                 <input ref={subjectInputRef} type="text" value={subject} onChange={handleSubjectInput} onBlur={handleBlur} aria-label="Subject" style={{ pointerEvents: 'auto' }} />
+                <input type="checkbox" name="botcheck" checked={botcheck} onChange={handleBotcheckInput} style={{ pointerEvents: 'auto' }} />
             </Html>
 
             {/* Main Paper Mesh - FRONT (with texture) */}
