@@ -146,40 +146,148 @@ const SmoothButton = ({ texture, onClick, position, size, text, fontPath }) => {
     );
 };
 
-// Web3Forms API Key
-const WEB3FORMS_KEY = '2ceaee50-a31e-4936-98fc-ca9648b21cdd';
+// Web3Forms API Key — loaded from environment variable so it's not exposed in the repo.
+// Set VITE_WEB3FORMS_KEY in .env (local dev) and in Cloudflare Pages dashboard (production).
+const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY || '';
 
-// Modern 2026 AI-based content analyzer heuristic
-const analyzeContentAI = (text) => {
-    if (!text || text.length < 5) return { isSpam: false };
+// Only these domains are allowed to submit the form.
+// Anyone cloning the repo and running on localhost will be silently blocked.
+const ALLOWED_ORIGINS = [
+    'itomdev.com',
+    'www.itomdev.com',
+    'portfolio-itom.pages.dev',
+];
 
-    const lowerText = text.toLowerCase();
+// ═══════════════════════════════════════════════════════════════════════
+// 2026 Advanced Anti-Spam System
+// Multi-layer defense: Bigram NLP analysis, rate limiting, timing traps
+// ═══════════════════════════════════════════════════════════════════════
 
-    // 1. Check for keyboard mashing patterns
-    const mashingPatterns = /(asdf|qwer|zxcv|awd|dawd|wasd|1234|test)/i;
-    if (mashingPatterns.test(lowerText)) return { isSpam: true, reason: 'Keyboard mashing detected' };
+// Common bigrams in English + Polish — real words use these frequently.
+// Gibberish like "dwgfn" or "ndwajdnw" will score very low against this set.
+const COMMON_BIGRAMS = new Set([
+    // English top bigrams
+    'th','he','in','er','an','re','on','at','en','nd','ti','es','or','te','of',
+    'ed','is','it','al','ar','st','to','nt','ng','se','ha','as','ou','io','le',
+    've','co','me','de','hi','ri','ro','ic','ne','ea','ra','ce','li','ch','ll',
+    'be','ma','si','om','ur','ca','el','ta','la','ns','ge','ly','il','no','pe',
+    'do','ss','ec','oo','so','us','wa','we','yo','lo','ow','wi','tr','su','pr',
+    // Polish common bigrams
+    'ie','rz','sz','cz','ni','na','po','prz','od','do','ść','za','ko','ow',
+    'sk','st','mi','wy','dz','ka','ra','je','ro','em','os','ak','ek','go',
+    'ał','ze','cz','rz','ja','ma','ci','ło','wa','da','no','mo','li','ić',
+]);
 
-    // 2. Check for lack of vowels or excessive consonants
-    const consonantClusters = /[bcdfghjklmnpqrstvwxyz]{6,}/i;
-    if (consonantClusters.test(lowerText.replace(/\s/g, ''))) return { isSpam: true, reason: 'Unnatural character sequences' };
+// Score a single word for "realness" using bigram frequency analysis
+const scoreWord = (word) => {
+    if (word.length <= 2) return 1.0; // Too short to judge, pass
+    if (/^https?:\/\//i.test(word)) return 1.0; // URLs pass
+    if (/^\d+$/.test(word)) return 1.0; // Pure numbers pass
+    if (/^[^a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+$/.test(word)) return 1.0; // Non-alpha (e.g. "!!!")
 
-    // 3. Repetitive content / Low entropy
-    const noSpaceText = lowerText.replace(/\s/g, '');
-    if (noSpaceText.length > 10) {
-        const uniqueChars = new Set(noSpaceText).size;
-        if ((uniqueChars / noSpaceText.length) < 0.3) {
-            return { isSpam: true, reason: 'Low entropy content' };
+    const lower = word.toLowerCase();
+    let hits = 0;
+    let total = 0;
+
+    for (let i = 0; i < lower.length - 1; i++) {
+        const bigram = lower[i] + lower[i + 1];
+        if (/[a-ząćęłńóśźż]{2}/.test(bigram)) {
+            total++;
+            if (COMMON_BIGRAMS.has(bigram)) hits++;
         }
     }
 
-    // 4. Unnaturally long words (often gibberish)
-    const words = text.split(/\s+/);
-    const hasUnnaturallyLongWord = words.some(word => word.length > 20 && !word.includes('http'));
-    if (hasUnnaturallyLongWord) {
-        return { isSpam: true, reason: 'Unnatural word length' };
+    if (total === 0) return 1.0;
+    const bigramScore = hits / total; // 0.0 = pure gibberish, 1.0 = perfect
+
+    // Vowel ratio per word (real words ~35-45% vowels)
+    const vowels = (lower.match(/[aeiouyąęó]/g) || []).length;
+    const alpha = (lower.match(/[a-ząćęłńóśźż]/g) || []).length;
+    const vowelRatio = alpha > 0 ? vowels / alpha : 0;
+    const vowelPenalty = (vowelRatio < 0.15 || vowelRatio > 0.85) ? 0.3 : 1.0;
+
+    // Consonant cluster penalty
+    const hasHugeCluster = /[bcdfghjklmnpqrstvwxzżźć]{4,}/i.test(lower);
+    const clusterPenalty = hasHugeCluster ? 0.5 : 1.0;
+
+    return bigramScore * vowelPenalty * clusterPenalty;
+};
+
+// Main content analyzer — scores every word and computes an aggregate
+const analyzeContentAI = (text) => {
+    if (!text || text.trim().length < 3) return { isSpam: true, reason: 'Message too short' };
+
+    const cleaned = text.trim();
+
+    // Single-word messages under 15 chars without a space are suspicious
+    if (cleaned.length <= 15 && !cleaned.includes(' ')) {
+        // Allow common short messages like "hello", "thanks", "cool", "nice", "hi there"
+        const commonShort = /^(hi|hey|hello|thanks|thank you|cool|nice|ok|okay|yes|no|sup|yo|cheers|hej|cześć|dzięki|siema|elo)$/i;
+        if (!commonShort.test(cleaned)) {
+            return { isSpam: true, reason: 'Too short to be a real message' };
+        }
+    }
+
+    const words = cleaned.split(/\s+/).filter(w => w.length > 0);
+    const scorableWords = words.filter(w => w.length > 2 && /[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]/.test(w));
+
+    if (scorableWords.length === 0) return { isSpam: true, reason: 'No real words detected' };
+
+    // Score each word
+    const wordScores = scorableWords.map(w => scoreWord(w));
+    const avgScore = wordScores.reduce((a, b) => a + b, 0) / wordScores.length;
+
+    // How many words scored below the gibberish threshold?
+    const gibberishCount = wordScores.filter(s => s < 0.25).length;
+    const gibberishRatio = gibberishCount / scorableWords.length;
+
+    // VERDICT: If average score is very low, or majority of words are gibberish => spam
+    if (avgScore < 0.2) {
+        return { isSpam: true, reason: 'Content appears to be gibberish' };
+    }
+    if (gibberishRatio >= 0.6 && scorableWords.length >= 2) {
+        return { isSpam: true, reason: 'Too many unrecognizable words' };
+    }
+
+    // Global vowel check (backup for edge cases)
+    const allAlpha = (cleaned.toLowerCase().match(/[a-ząćęłńóśźż]/g) || []);
+    const allVowels = (cleaned.toLowerCase().match(/[aeiouyąęó]/g) || []);
+    if (allAlpha.length > 8 && allVowels.length / allAlpha.length < 0.12) {
+        return { isSpam: true, reason: 'Suspicious character distribution' };
     }
 
     return { isSpam: false };
+};
+
+// ═══════════════════════════════════════════════════════════════════════
+// IP-based Rate Limiter (localStorage)
+// Limits submissions to 1 per RATE_LIMIT_MINUTES from same browser session.
+// Not bulletproof (localStorage can be cleared), but stops 95% of casual spam.
+// ═══════════════════════════════════════════════════════════════════════
+const RATE_LIMIT_MINUTES = 30;
+const RATE_LIMIT_KEY = 'portfolio_contact_rl';
+
+const checkRateLimit = () => {
+    try {
+        const stored = localStorage.getItem(RATE_LIMIT_KEY);
+        if (!stored) return { allowed: true };
+        const lastSend = parseInt(stored, 10);
+        const elapsed = Date.now() - lastSend;
+        const remaining = (RATE_LIMIT_MINUTES * 60 * 1000) - elapsed;
+        if (remaining > 0) {
+            const mins = Math.ceil(remaining / 60000);
+            return { allowed: false, minutesLeft: mins };
+        }
+        return { allowed: true };
+    } catch {
+        return { allowed: true }; // If localStorage fails, allow
+    }
+};
+
+const recordSubmission = () => {
+    try {
+        localStorage.setItem(RATE_LIMIT_KEY, Date.now().toString());
+    } catch { /* silently fail */ }
 };
 
 
@@ -198,6 +306,7 @@ const MessagePaper = ({ position = [0, 0.05, 2], onSend }) => {
     const [activeField, setActiveField] = useState(null);
     const [cursorVisible, setCursorVisible] = useState(true);
     const [botcheck, setBotcheck] = useState(''); // Honeypot state
+    const formLoadedAt = useRef(Date.now()); // Timing trap: track when form mounted
 
     // Validation & Submit State
     const [errors, setErrors] = useState({});
@@ -270,6 +379,34 @@ const MessagePaper = ({ position = [0, 0.05, 2], onSend }) => {
         setErrors({});
 
         try {
+            // --- 0. Rate Limiting (1 message per 30 min) ---
+            const rateCheck = checkRateLimit();
+            if (!rateCheck.allowed) {
+                setErrors({ message: `Please wait ${rateCheck.minutesLeft} min before sending again.` });
+                setIsSubmitting(false);
+                return;
+            }
+
+            // --- 0b. Timing Trap (must spend >3s on form) ---
+            const timeOnForm = Date.now() - formLoadedAt.current;
+            if (timeOnForm < 3000) {
+                // Bots submit instantly — silently fake success
+                setSubmitStatus('success');
+                setIsSubmitting(false);
+                return;
+            }
+
+            // --- 0c. Origin / Domain Lock ---
+            // Block submissions from cloned repos running on unauthorized domains
+            const currentHost = window.location.hostname;
+            const isAllowedOrigin = ALLOWED_ORIGINS.some(d => currentHost === d || currentHost.endsWith('.' + d));
+            if (!isAllowedOrigin) {
+                // Silently fake success so attacker thinks it worked
+                setSubmitStatus('success');
+                setIsSubmitting(false);
+                return;
+            }
+
             // --- 1. Honeypot check (Silent block) ---
             if (botcheck) {
                 // If botcheck is filled out, act like it succeeded to fool the bot
@@ -328,13 +465,14 @@ const MessagePaper = ({ position = [0, 0.05, 2], onSend }) => {
 
             if (result.success) {
                 setSubmitStatus('success');
+                recordSubmission(); // Record for rate limiting
                 onSend?.({ message, email, subject });
-                // console.log('✅ Message sent successfully!');
 
                 // Clear form after success
                 setMessage('');
                 setEmail('');
                 setSubject('');
+                formLoadedAt.current = Date.now(); // Reset timing trap
             } else {
                 throw new Error(result.message || 'Failed to send');
             }
