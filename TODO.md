@@ -152,7 +152,7 @@
 - [ ] **Responsywność (Mobile):** Poprawić FOV/pozycję Z kamery na małych ekranach, viewport ucina sceny.
 - [ ] **Optymalizacja ładowania:** Dodać wizualny feedback po kliknięciu drzwi (spinner) + preload tekstur najbliższych pokojów.
 - [X] **SEO Meta Tags:** ~~Dodać title, description, OG, Twitter Card, JSON-LD, canonical, noscript fallback.~~ ✅ DONE
-- [ ] **Meta tagi i OG image:** Dodać `<meta description>`, Open Graph tags, Twitter Card do `index.html`.
+- [X] **Meta tagi i OG image:** Dodać `<meta description>`, Open Graph tags, Twitter Card do `index.html`. ✅ DONE (fully dynamic via build-time plugin)
 - [ ] Preloader pokaże % ładowania assetów (jest `Preloader.jsx`, może wymaga update)
 
 ### 13. Animacje i microinterakcje

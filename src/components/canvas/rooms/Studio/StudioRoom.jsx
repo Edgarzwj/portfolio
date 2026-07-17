@@ -9,6 +9,7 @@ import { TextureLoader } from 'three';
 import FloatingCodeParticles from './FloatingCodeParticles';
 import { PositionalAudio } from '@react-three/drei';
 import { useAudio } from '../../../../context/AudioManager';
+import { useStudioContent } from '../../../../hooks/useSanityData';
 import '../../shaders/RevealMaterial';
 import { isTouchDevice } from '../../../../utils/deviceDetect';
 import { usePaintMaterial } from '../Gallery/usePaintMaterial';
@@ -106,6 +107,10 @@ const StudioRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
     const { globalVolume, isMuted } = useAudio();
     const effectiveVolume = isMuted ? 0 : AUDIO_SETTINGS.volume * globalVolume;
 
+    // Pobieranie danych z Sanity.io (fallback do starych danych)
+    const sanityContent = useStudioContent();
+    const activeContent = sanityContent || CONTENT_DATA;
+
     const audioRef = useRef();
     useEffect(() => {
         if (audioRef.current && audioRef.current.setVolume) {
@@ -147,7 +152,10 @@ const StudioRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
         }
     }, [showRoom, isWarmup, isTeleporting]);
 
-    const latestContent = getLatestContent();
+    const latestContent = useMemo(() => {
+        if (!activeContent || activeContent.length === 0) return null;
+        return [...activeContent].sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+    }, [activeContent]);
 
     // Monitor Y offsets for falling animation (mutable)
     const monitorOffsets = useRef([]);
@@ -185,7 +193,15 @@ const StudioRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
         const items = [];
 
         // Shuffle content for mixed appearance (seeded for consistency)
-        const shuffledContent = [...CONTENT_DATA].sort(() => 0.5 - Math.random());
+        let shuffledContent = [...activeContent].sort(() => 0.5 - Math.random());
+        
+        // Ensure the tower is extremely tall (at least 12 rings = 48 items)
+        // so that the teleportation boundaries are far outside the camera's view.
+        if (shuffledContent.length > 0) {
+            while (shuffledContent.length < 48) {
+                shuffledContent = [...shuffledContent, ...[...activeContent].sort(() => 0.5 - Math.random())];
+            }
+        }
 
         // Calculate how many rings we need
         const totalMonitors = shuffledContent.length;
@@ -200,7 +216,13 @@ const StudioRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
 
             for (let i = 0; i < MONITORS_PER_RING && contentIndex < shuffledContent.length; i++) {
                 const contentItem = shuffledContent[contentIndex];
-                const platform = PLATFORM_CONFIG[contentItem.platform];
+                const platform = PLATFORM_CONFIG[contentItem.platform] || {
+                    shape: contentItem.device || 'monitor',
+                    color: '#ffffff',
+                    accentColor: '#cccccc',
+                    icon: '🌐',
+                    label: contentItem.platform || 'Web',
+                };
                 const angle = i * angleStep + angleOffset;
 
                 const x = Math.cos(angle) * currentRadius;
@@ -212,7 +234,8 @@ const StudioRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                 const finalY = baseY + yJitter;
 
                 let width, height, depth;
-                switch (platform.shape) {
+                const deviceShape = contentItem.device || platform.shape || 'monitor';
+                switch (deviceShape) {
                     case 'tv':
                         width = 1.6; height = 1.187; depth = 1.0; // Legacy 1.348 ratio
                         break;
@@ -236,7 +259,7 @@ const StudioRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                     angle: angle,
                     rot: -angle + Math.PI / 2,
                     platformConfig: platform,
-                    isLatest: contentItem.id === latestContent.id,
+                    isLatest: latestContent ? contentItem.id === latestContent.id : false,
                 });
 
                 contentIndex++;
@@ -253,7 +276,7 @@ const StudioRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
         const totalHeight = Math.max(VERTICAL_SPACING * 3, maxBaseY - minBaseY + VERTICAL_SPACING);
 
         return { items, totalHeight };
-    }, [latestContent.id, responsiveParams.towerRadius]);
+    }, [latestContent?.id, responsiveParams.towerRadius, activeContent]);
 
     // Destructure for easier access
     const monitors = monitorData.items;
@@ -500,12 +523,12 @@ const StudioRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                 // Calculate current Y
                 const currentY = monitor.baseY + monitorOffsets.current[index];
 
-                // If below threshold (-2), teleport to top (seamless loop)
-                // If moving UP (negative speed), we need to check TOP threshold too!
-                if (currentY < -2 && fallSpeed.current > 0) {
+                // If below threshold (-10.0), teleport to top (seamless loop)
+                // If moving UP (negative speed), check TOP threshold (totalHeight - 10.0)
+                if (currentY < -10.0 && fallSpeed.current > 0) {
                     // Falling Down -> Reset to top
                     monitorOffsets.current[index] += totalHeight;
-                } else if (currentY > totalHeight - 2 && fallSpeed.current < 0) {
+                } else if (currentY > totalHeight - 10.0 && fallSpeed.current < 0) {
                     // Moving Up -> Reset to bottom
                     monitorOffsets.current[index] -= totalHeight;
                 }
@@ -552,7 +575,7 @@ const StudioRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
 
                 {monitors.map((item, index) => (
                     <MonitorBlock
-                        key={item.id}
+                        key={`${item.id}-${index}`}
                         item={item}
                         index={index}
                         meshRef={(el) => { monitorRefs.current[index] = el; }}
@@ -591,10 +614,11 @@ const MonitorBlock = memo(({ item, meshRef, isSelected, onMonitorClick, disabled
     const matRef5 = useRef(); // -Z back
     const matRefs = [matRef0, matRef1, matRef2, matRef3, matRef4, matRef5];
 
-    // Check platform types
-    const isBlogMonitor = item.platform === 'blog';
-    const isTvMonitor = item.platform === 'youtube';
-    const isPhoneMonitor = item.platform === 'tiktok';
+    // Check device types (prioritize Sanity 'device' field, fallback to platform defaults)
+    const deviceShape = item.device || (PLATFORM_CONFIG[item.platform]?.shape) || 'monitor';
+    const isBlogMonitor = deviceShape === 'monitor';
+    const isTvMonitor = deviceShape === 'tv';
+    const isPhoneMonitor = deviceShape === 'phone';
 
     // Determine the URL for the front texture (custom or default)
     const frontTextureUrl = item.frontTexture || (
@@ -769,7 +793,7 @@ const MonitorBlock = memo(({ item, meshRef, isSelected, onMonitorClick, disabled
         // Fallback for unknown platform
         return (
             <group ref={meshRef} position={[item.x, item.baseY, item.z]} rotation={[0, item.rot, 0]}>
-                <mesh>
+                <mesh frustumCulled={false}>
                     <boxGeometry args={[item.width, item.height, item.depth]} />
                     <meshBasicMaterial color={item.platformConfig.color} />
                 </mesh>
@@ -801,7 +825,7 @@ const MonitorBlock = memo(({ item, meshRef, isSelected, onMonitorClick, disabled
             }}
         >
             {/* PAINTED BOX (behind) — initially visible to force shader compilation during loading phase */}
-            <mesh ref={paintedBoxRef} visible={true}>
+            <mesh ref={paintedBoxRef} visible={true} frustumCulled={false}>
                 <boxGeometry args={[item.width, item.height, item.depth]} />
                 {paintedMaterials.map((mat, i) => (
                     <primitive key={`p${i}`} attach={`material-${i}`} object={mat} />
@@ -809,7 +833,7 @@ const MonitorBlock = memo(({ item, meshRef, isSelected, onMonitorClick, disabled
             </mesh>
 
             {/* SKETCH BOX (front) — revealMaterial faces get discarded on hover */}
-            <mesh>
+            <mesh frustumCulled={false}>
                 <boxGeometry args={[item.width, item.height, item.depth]} />
                 {faceConfig.map((face, i) => {
                     if (face.painted) {

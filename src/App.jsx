@@ -8,11 +8,13 @@ import PaperTransition from './components/dom/PaperTransition';
 import { AudioProvider, useAudio } from './context/AudioManager';
 import { initAudio } from './utils/audioManager';
 import { PerformanceProvider, usePerformance } from './context/PerformanceContext';
-import { SceneProvider } from './context/SceneContext';
+import { SceneProvider, useScene } from './context/SceneContext';
 import NavigationUI from './components/ui/NavigationUI';
 import GlobalOverlay from './components/ui/GlobalOverlay';
 import ScreenReaderOverlay from './components/ui/ScreenReaderOverlay';
+import { useDocumentMeta } from './hooks/useDocumentMeta';
 import posthog from 'posthog-js';
+import { loadSanityData } from './hooks/useSanityData';
 
 // Initialize PostHog
 posthog.init(import.meta.env.VITE_POSTHOG_KEY, {
@@ -109,6 +111,25 @@ const PaperSceneBackground = () => {
   return null;
 };
 
+// Bridge component to use hooks inside SceneProvider
+// Handles dynamic meta tags + deep link auto-teleport
+function DocumentMetaBridge() {
+  useDocumentMeta();
+
+  const { initialRoom, deeplinkHandled, hasEntered, teleportTo, markEntered } = useScene();
+
+  // Deep linking: if user lands on e.g. /gallery, auto-teleport after scene loads
+  useEffect(() => {
+    if (initialRoom && hasEntered && !deeplinkHandled.current) {
+      deeplinkHandled.current = true;
+      // Small delay to let the corridor render first
+      setTimeout(() => teleportTo(initialRoom), 300);
+    }
+  }, [initialRoom, hasEntered, teleportTo, deeplinkHandled]);
+
+  return null;
+}
+
 function AppContent() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [sceneReady, setSceneReady] = useState(false);
@@ -130,6 +151,7 @@ function AppContent() {
   return (
     <AudioProvider>
       <SceneProvider>
+        <DocumentMetaBridge />
         <GlobalAudioEnabler />
         <div className="app">
           {/* Full screen 3D Canvas */}
@@ -202,6 +224,9 @@ export default function App() {
   // Preload browser-based images (for standard <img> tags) immediately upon mounting App
   // This ensures they are in the network waterfall during the initial loading phase.
   useEffect(() => {
+    // Eagerly preload Sanity CMS data and images
+    loadSanityData();
+
     const filteredImages = filterTexturesByDevice(IMAGE_ASSETS, supportsHover);
     // console.log(`[Preload] Triggering browser-level image preloads for ${filteredImages.length} assets.`);
     filteredImages.forEach(path => preloadBrowserImage(path));

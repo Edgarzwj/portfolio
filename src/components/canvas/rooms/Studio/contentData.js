@@ -29,6 +29,34 @@ export const PLATFORM_CONFIG = {
         label: 'TikTok',
         shape: 'phone', // Vertical phone
     },
+    instagram: {
+        color: '#E1306C',
+        accentColor: '#C13584',
+        icon: '📷',
+        label: 'Instagram',
+        shape: 'phone',
+    },
+    x: {
+        color: '#000000',
+        accentColor: '#14171A',
+        icon: '𝕏',
+        label: 'X (Twitter)',
+        shape: 'monitor',
+    },
+    linkedin: {
+        color: '#0077B5',
+        accentColor: '#005E93',
+        icon: 'in',
+        label: 'LinkedIn',
+        shape: 'monitor',
+    },
+    codrops: {
+        color: '#0099FF',
+        accentColor: '#0077CC',
+        icon: '💧',
+        label: 'Codrops',
+        shape: 'monitor',
+    },
 };
 
 // Sample content data - replace with real content later

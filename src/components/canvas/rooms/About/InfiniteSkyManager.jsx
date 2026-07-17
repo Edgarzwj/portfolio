@@ -7,6 +7,7 @@ import SkyChunk, { CHUNK_LENGTH, ROOM_Z } from './SkyChunk';
 import { useScene } from '../../../../context/SceneContext';
 import '../../shaders/RevealBasicMaterial'; // Registers brush-stroke reveal for BasicMaterial
 import { isTouchDevice } from '../../../../utils/deviceDetect';
+import { useAwards } from '../../../../hooks/useSanityData';
 
 // Reusable Vector3 to avoid allocations in event handlers
 const _tempVec3 = new THREE.Vector3();
@@ -456,10 +457,10 @@ const AWARDS_DATA = {
             icon: '📅'
         }
     },
-    soty: {
-        id: 'award-soty',
+    other: {
+        id: 'award-other',
         layout: 'certificate_grid',
-        title: 'Site of the Year Awards',
+        title: 'Other Awards',
         items: [],
         platformConfig: {
             label: 'PRESTIGE',
@@ -474,6 +475,10 @@ const AWARDS_DATA = {
  * SOTY (center), SOTD, SOTM, Featured (behind)
  */
 const AwardsMilestone = ({ z, scrollProgressRef }) => {
+    // Pobieranie danych nagród z Sanity (z fallbackiem)
+    const sanityAwards = useAwards();
+    const awardsData = sanityAwards || AWARDS_DATA;
+
     const { camera, viewport } = useThree();
     const isTouch = isTouchDevice();
     const { openOverlay } = useScene();
@@ -650,7 +655,7 @@ const AwardsMilestone = ({ z, scrollProgressRef }) => {
                 <AwardButton
                     onClick={(e) => {
                         e.stopPropagation();
-                        openOverlay(AWARDS_DATA.sotd);
+                        openOverlay(awardsData.sotd);
                     }}
                     texture={buttonTexture}
                     paintedTexture={buttonPaintedTexture}
@@ -679,7 +684,7 @@ const AwardsMilestone = ({ z, scrollProgressRef }) => {
                     anchorY="middle"
                     font="/fonts/CabinSketch-Bold.ttf"
                 >
-                    4
+                    {awardsData.sotd.items.length}
                 </Text>
             </group>
 
@@ -711,7 +716,7 @@ const AwardsMilestone = ({ z, scrollProgressRef }) => {
                 <AwardButton
                     onClick={(e) => {
                         e.stopPropagation();
-                        openOverlay(AWARDS_DATA.sotm);
+                        openOverlay(awardsData.sotm);
                     }}
                     texture={buttonTexture}
                     paintedTexture={buttonPaintedTexture}
@@ -740,7 +745,7 @@ const AwardsMilestone = ({ z, scrollProgressRef }) => {
                     anchorY="middle"
                     font="/fonts/CabinSketch-Bold.ttf"
                 >
-                    0
+                    {awardsData.sotm.items.length}
                 </Text>
             </group>
 
@@ -771,7 +776,7 @@ const AwardsMilestone = ({ z, scrollProgressRef }) => {
                 <AwardButton
                     onClick={(e) => {
                         e.stopPropagation();
-                        openOverlay(AWARDS_DATA.soty);
+                        openOverlay(awardsData.other);
                     }}
                     texture={buttonTexture}
                     paintedTexture={buttonPaintedTexture}
@@ -789,7 +794,7 @@ const AwardsMilestone = ({ z, scrollProgressRef }) => {
                     anchorY="middle"
                     font="/fonts/CabinSketch-Bold.ttf"
                 >
-                    SOTY
+                    OTHER
                 </Text>
                 {/* AWARD COUNT */}
                 <Text
@@ -800,7 +805,7 @@ const AwardsMilestone = ({ z, scrollProgressRef }) => {
                     anchorY="middle"
                     font="/fonts/CabinSketch-Bold.ttf"
                 >
-                    0
+                    {awardsData.other.items.length}
                 </Text>
             </group>
         </group>

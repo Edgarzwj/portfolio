@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useCallback, useMemo } from 'react';
+import { createContext, useContext, useState, useCallback, useMemo, useRef } from 'react';
+import { getInitialRoomFromUrl } from '../hooks/useDocumentMeta';
 
 const SceneContext = createContext(null);
 
@@ -11,6 +12,10 @@ export const useScene = () => {
 };
 
 export const SceneProvider = ({ children }) => {
+    // Deep linking: check if URL points to a specific room on first load
+    const initialRoom = useRef(getInitialRoomFromUrl());
+    const deeplinkHandled = useRef(false);
+
     const [currentRoom, setCurrentRoom] = useState(null); // null = corridor, 'about', 'portfolio', etc.
     const [hasEntered, setHasEntered] = useState(false);  // Has user clicked entrance doors?
     const [exitRequested, setExitRequested] = useState(false); // Signal to request exit from room
@@ -144,6 +149,9 @@ export const SceneProvider = ({ children }) => {
         openOverlay,    // Exposed
         closeOverlay,   // Exposed
         isInRoom: currentRoom !== null,
+        // Deep linking
+        initialRoom: initialRoom.current,
+        deeplinkHandled,
         // Teleportation
         teleportTarget,
         isTeleporting,

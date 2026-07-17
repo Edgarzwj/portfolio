@@ -1,4 +1,5 @@
 import { useScene } from '../../context/SceneContext';
+import { useGalleryProjects, useStudioContent, useAwards } from '../../hooks/useSanityData';
 import '../../styles/ScreenReaderOverlay.scss';
 
 /**
@@ -10,6 +11,11 @@ import '../../styles/ScreenReaderOverlay.scss';
  */
 const ScreenReaderOverlay = () => {
     const { hasEntered, isInRoom, currentRoom, teleportTo, requestExit } = useScene();
+    
+    // Pobieranie danych do wygenerowania niewidocznego HTML-a dla SEO / robotów
+    const projects = useGalleryProjects();
+    const studio = useStudioContent();
+    const awards = useAwards();
 
     return (
         <div className="sr-overlay" role="complementary" aria-label="Accessible navigation for 3D portfolio">
@@ -72,12 +78,41 @@ const ScreenReaderOverlay = () => {
                             <div aria-label="About room content">
                                 <h3>About Me</h3>
                                 <p>This room contains my personal story, awards, journey milestones, and technology skills displayed as interactive balloons.</p>
+                                
+                                {awards && (
+                                    <section>
+                                        <h4>My Awards</h4>
+                                        <ul>
+                                            {awards.sotd && awards.sotd.items && awards.sotd.items.map((a, i) => (
+                                                <li key={i}>{a.label} - {a.date} {a.url && <a href={a.url}>View</a>}</li>
+                                            ))}
+                                            {awards.sotm && awards.sotm.items && awards.sotm.items.map((a, i) => (
+                                                <li key={i}>{a.label} - {a.date} {a.url && <a href={a.url}>View</a>}</li>
+                                            ))}
+                                            {awards.other && awards.other.items && awards.other.items.map((a, i) => (
+                                                <li key={i}>{a.label} - {a.date} {a.url && <a href={a.url}>View</a>}</li>
+                                            ))}
+                                        </ul>
+                                    </section>
+                                )}
                             </div>
                         )}
                         {currentRoom === 'gallery' && (
                             <div aria-label="Gallery room content">
                                 <h3>My Projects</h3>
                                 <p>Browse through my portfolio projects displayed on paper cards. Click on a project card to see details and visit the live site.</p>
+                                
+                                {projects && projects.length > 0 && (
+                                    <ul>
+                                        {projects.map((p, i) => (
+                                            <li key={i}>
+                                                <h4>{p.title}</h4>
+                                                <p>{p.description}</p>
+                                                {p.url && <a href={p.url}>Visit {p.title}</a>}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
                             </div>
                         )}
                         {currentRoom === 'contact' && (
@@ -90,6 +125,18 @@ const ScreenReaderOverlay = () => {
                             <div aria-label="Studio room content">
                                 <h3>The Studio</h3>
                                 <p>Explore my experience and skills on rotating monitors. Click a monitor to read detailed information about my work.</p>
+
+                                {studio && studio.length > 0 && (
+                                    <ul>
+                                        {studio.map((s, i) => (
+                                            <li key={i}>
+                                                <h4>{s.title} ({s.platform})</h4>
+                                                <p>{s.description}</p>
+                                                {s.url && <a href={s.url}>View content</a>}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
                             </div>
                         )}
 

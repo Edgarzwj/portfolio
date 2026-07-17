@@ -12,6 +12,7 @@ import PaperMaterial from './PaperMaterial';
 import GalleryClouds from './GalleryClouds';
 import { useAudio } from '../../../../context/AudioManager';
 import { usePaintMaterial } from './usePaintMaterial';
+import { useGalleryProjects } from '../../../../hooks/useSanityData';
 
 // Reusable Vector3 to avoid allocations in useFrame
 const _tempScale = new THREE.Vector3();
@@ -33,7 +34,7 @@ export const GALLERY_INTERACTION_AUDIO_SETTINGS = {
 };
 
 // Define the unique projects and their textures
-const UNIQUE_PROJECTS = [
+const FALLBACK_PROJECTS = [
     {
         id: 'monetune',
         title: 'MONETUNE',
@@ -207,6 +208,10 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
     // We use matchMedia('(hover: hover)') to detect devices with a cursor/hover capability
     const [canHover, setCanHover] = useState(() => typeof window !== 'undefined' ? window.matchMedia('(hover: hover)').matches : true);
 
+    // Pobieranie danych z Sanity.io (fallback do starych danych)
+    const sanityProjects = useGalleryProjects();
+    const activeProjects = sanityProjects || FALLBACK_PROJECTS;
+
     useEffect(() => {
         const mq = window.matchMedia('(hover: hover)');
         const handleHoverChange = (e) => setCanHover(e.matches);
@@ -215,11 +220,11 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
     }, []);
 
     // Load all project front textures in a flat array
-    const textureUrls = UNIQUE_PROJECTS.map(p => p.front);
+    const textureUrls = activeProjects.map(p => p.front);
     const projectTextures = useTexture(textureUrls);
 
     // Load painted textures only on desktop, fallback to front if mobile/touch
-    const paintedUrls = UNIQUE_PROJECTS.map(p => (canHover && p.painted) ? p.painted : p.front);
+    const paintedUrls = activeProjects.map(p => (canHover && p.painted) ? p.painted : p.front);
     const paintedTextures = useTexture(paintedUrls);
 
     // Load the universal back texture and the button texture conditionally
@@ -246,8 +251,8 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
     // Construct the full list of projects (repeated) with textures attached
     const projects = useMemo(() => {
         return Array.from({ length: PROJECT_COUNT }).map((_, i) => {
-            const projectIndex = i % UNIQUE_PROJECTS.length;
-            const projectData = UNIQUE_PROJECTS[projectIndex];
+            const projectIndex = i % activeProjects.length;
+            const projectData = activeProjects[projectIndex];
 
             // Extract front texture
             const frontTex = projectTextures[projectIndex];
