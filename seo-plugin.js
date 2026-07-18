@@ -142,6 +142,7 @@ function buildJsonLd(globalInfo, projects, studio, awards, faqList) {
                     name: s.seoTitle || s.title,
                     description: s.seoDescription || s.description || '',
                     url: s.url || undefined,
+                    thumbnailUrl: s.thumbnailUrl || 'https://itomdev.com/og-image.webp',
                     ...(s.duration ? { duration: `PT${s.duration.replace(':', 'M')}S` } : {}),
                     ...(s.date ? { uploadDate: s.date } : {}),
                     ...(s.views ? { interactionStatistic: { '@type': 'InteractionCounter', interactionType: 'https://schema.org/WatchAction', userInteractionCount: s.views } } : {}),
@@ -165,6 +166,7 @@ function buildJsonLd(globalInfo, projects, studio, awards, faqList) {
                     name: s.seoTitle || s.title,
                     description: s.seoDescription || s.description || '',
                     url: s.url || undefined,
+                    thumbnailUrl: s.thumbnailUrl || 'https://itomdev.com/og-image.webp',
                     ...(s.date ? { uploadDate: s.date } : {}),
                     ...(s.views ? { interactionStatistic: { '@type': 'InteractionCounter', interactionType: 'https://schema.org/WatchAction', userInteractionCount: s.views } } : {}),
                     ...(s.likes ? { aggregateRating: { '@type': 'AggregateRating', ratingCount: s.likes } } : {}),
@@ -323,7 +325,7 @@ export function generateSeoHtml() {
                 const [globalInfo, projects, studio, awards, faqList] = await Promise.all([
                     sanityClient.fetch(`*[_id == "globalInfo"][0]`),
                     sanityClient.fetch(`*[_type == "galleryProject"]`),
-                    sanityClient.fetch(`*[_type == "studioItem"]`),
+                    sanityClient.fetch(`*[_type == "studioItem"] { ..., "thumbnailUrl": frontTexture.asset->url }`),
                     sanityClient.fetch(`*[_type == "awardCertificate"]`),
                     sanityClient.fetch(`*[_type == "faq"]`)
                 ]);
