@@ -22,6 +22,15 @@ const TECH_STACK_NAMES = {
 };
 
 /**
+ * Helper to ensure dates are in ISO-8601 format with timezone for SEO.
+ */
+function formatIsoDate(dateString) {
+    if (!dateString) return undefined;
+    if (dateString.includes('T')) return dateString; // Already has time/timezone
+    return `${dateString}T12:00:00Z`; // Default to noon UTC
+}
+
+/**
  * Build dynamic JSON-LD structured data from Sanity content.
  * This generates schema.org entities that AI search engines (Google AI Overviews,
  * Perplexity, Gemini) use to understand and cite content in their answers.
@@ -112,17 +121,15 @@ function buildJsonLd(globalInfo, projects, studio, awards, faqList) {
             }))
         });
 
-        // Individual WebApplication entries for each project (richer detail)
+        // Individual CreativeWork entries for each project (richer detail)
         projects.forEach(p => {
             const projectSlug = p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
             graph.push({
-                '@type': 'WebApplication',
+                '@type': 'CreativeWork',
                 '@id': `https://itomdev.com/#project-${projectSlug}`,
                 name: p.seoTitle || p.title,
                 description: p.seoDescription || p.description || '',
                 url: p.url || undefined,
-                applicationCategory: 'WebApplication',
-                operatingSystem: 'Web Browser',
                 creator: { '@id': 'https://itomdev.com/#person' },
                 ...(p.techStack && p.techStack.length > 0 ? {
                     keywords: p.techStack.map(t => TECH_STACK_NAMES[t] || t).join(', ')
@@ -136,15 +143,24 @@ function buildJsonLd(globalInfo, projects, studio, awards, faqList) {
         studio.forEach((s, idx) => {
             const studioSlug = `studio-item-${idx}`;
             if (s.platform === 'youtube') {
+                let embedUrl = undefined;
+                if (s.url) {
+                    const ytMatch = s.url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^"&?\/\s]{11})/);
+                    if (ytMatch && ytMatch[1]) {
+                        embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}`;
+                    }
+                }
+
                 graph.push({
                     '@type': 'VideoObject',
                     '@id': `https://itomdev.com/#${studioSlug}`,
                     name: s.seoTitle || s.title,
                     description: s.seoDescription || s.description || '',
                     url: s.url || undefined,
+                    ...(embedUrl ? { embedUrl } : {}),
                     thumbnailUrl: s.thumbnailUrl || 'https://itomdev.com/og-image.webp',
                     ...(s.duration ? { duration: `PT${s.duration.replace(':', 'M')}S` } : {}),
-                    ...(s.date ? { uploadDate: s.date } : {}),
+                    ...(s.date ? { uploadDate: formatIsoDate(s.date) } : {}),
                     ...(s.views ? { interactionStatistic: { '@type': 'InteractionCounter', interactionType: 'https://schema.org/WatchAction', userInteractionCount: s.views } } : {}),
                     author: { '@id': 'https://itomdev.com/#person' },
                 });
@@ -155,7 +171,8 @@ function buildJsonLd(globalInfo, projects, studio, awards, faqList) {
                     headline: s.seoTitle || s.title,
                     description: s.seoDescription || s.description || '',
                     url: s.url || undefined,
-                    ...(s.date ? { datePublished: s.date } : {}),
+                    image: s.thumbnailUrl || 'https://itomdev.com/og-image.webp',
+                    ...(s.date ? { datePublished: formatIsoDate(s.date) } : {}),
                     ...(s.readTime ? { timeRequired: `PT${s.readTime.replace(' min', '')}M` } : {}),
                     author: { '@id': 'https://itomdev.com/#person' },
                 });
@@ -167,7 +184,7 @@ function buildJsonLd(globalInfo, projects, studio, awards, faqList) {
                     description: s.seoDescription || s.description || '',
                     url: s.url || undefined,
                     thumbnailUrl: s.thumbnailUrl || 'https://itomdev.com/og-image.webp',
-                    ...(s.date ? { uploadDate: s.date } : {}),
+                    ...(s.date ? { uploadDate: formatIsoDate(s.date) } : {}),
                     ...(s.views ? { interactionStatistic: { '@type': 'InteractionCounter', interactionType: 'https://schema.org/WatchAction', userInteractionCount: s.views } } : {}),
                     ...(s.likes ? { aggregateRating: { '@type': 'AggregateRating', ratingCount: s.likes } } : {}),
                     author: { '@id': 'https://itomdev.com/#person' },
@@ -179,7 +196,8 @@ function buildJsonLd(globalInfo, projects, studio, awards, faqList) {
                     headline: s.seoTitle || s.title,
                     description: s.seoDescription || s.description || '',
                     url: s.url || undefined,
-                    ...(s.date ? { datePublished: s.date } : {}),
+                    image: s.thumbnailUrl || 'https://itomdev.com/og-image.webp',
+                    ...(s.date ? { datePublished: formatIsoDate(s.date) } : {}),
                     ...(s.likes ? { interactionStatistic: { '@type': 'InteractionCounter', interactionType: 'https://schema.org/LikeAction', userInteractionCount: s.likes } } : {}),
                     author: { '@id': 'https://itomdev.com/#person' },
                 });
@@ -190,7 +208,8 @@ function buildJsonLd(globalInfo, projects, studio, awards, faqList) {
                     headline: s.seoTitle || s.title,
                     description: s.seoDescription || s.description || '',
                     url: s.url || undefined,
-                    ...(s.date ? { datePublished: s.date } : {}),
+                    image: s.thumbnailUrl || 'https://itomdev.com/og-image.webp',
+                    ...(s.date ? { datePublished: formatIsoDate(s.date) } : {}),
                     author: { '@id': 'https://itomdev.com/#person' },
                 });
             }
@@ -211,7 +230,7 @@ function buildJsonLd(globalInfo, projects, studio, awards, faqList) {
                 item: {
                     '@type': 'CreativeWork',
                     name: `${categoryLabels[a.category] || a.category} — ${a.seoTitle || a.title}`,
-                    ...(a.date ? { dateCreated: a.date } : {}),
+                    ...(a.date ? { dateCreated: formatIsoDate(a.date) } : {}),
                     url: a.url || undefined,
                     description: a.seoDescription || undefined,
                     award: categoryLabels[a.category] || a.category,
