@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { sanityClient, urlFor } from '../config/sanity';
+import { sanityClient, urlFor, getProxyUrl } from '../config/sanity';
 import { useTexture } from '@react-three/drei';
 import { useLoader } from '@react-three/fiber';
 import { TextureLoader } from 'three';
@@ -98,8 +98,8 @@ export function loadSanityData() {
             // Mapowanie danych galerii i techStack na ścieżki lokalne oraz optymalizacja obrazków z Sanity
             if (projectsData && projectsData.length > 0) {
                 cache.projects = projectsData.map(p => {
-                    const frontUrl = p.frontImage ? urlFor(p.frontImage).width(1024).quality(80).auto('format').url() : null;
-                    const paintedUrl = p.paintedImage ? urlFor(p.paintedImage).width(1024).quality(80).auto('format').url() : null;
+                    const frontUrl = p.frontImage ? getProxyUrl(urlFor(p.frontImage).width(1024).quality(80).auto('format')) : null;
+                    const paintedUrl = p.paintedImage ? getProxyUrl(urlFor(p.paintedImage).width(1024).quality(80).auto('format')) : null;
                     return {
                         ...p,
                         front: frontUrl,
@@ -112,8 +112,8 @@ export function loadSanityData() {
             // Mapowanie danych studio, przypisanie id oraz optymalizacja obrazków z Sanity
             if (contentData && contentData.length > 0) {
                 cache.content = contentData.map((item, index) => {
-                    const frontTextureUrl = item.frontTexture ? urlFor(item.frontTexture).width(1024).quality(80).auto('format').url() : null;
-                    const paintedFrontTextureUrl = item.paintedFrontTexture ? urlFor(item.paintedFrontTexture).width(1024).quality(80).auto('format').url() : null;
+                    const frontTextureUrl = item.frontTexture ? getProxyUrl(urlFor(item.frontTexture).width(1024).quality(80).auto('format')) : null;
+                    const paintedFrontTextureUrl = item.paintedFrontTexture ? getProxyUrl(urlFor(item.paintedFrontTexture).width(1024).quality(80).auto('format')) : null;
                     return {
                         ...item,
                         id: item.platform + '-' + index,
@@ -126,7 +126,7 @@ export function loadSanityData() {
             // Mapowanie nagród do struktury oczekiwanej przez overlay oraz optymalizacja certyfikatów z Sanity
             if (awardsData && awardsData.length > 0) {
                 const mapItems = (items) => items.map(a => {
-                    const imageUrl = a.certificateImage ? urlFor(a.certificateImage).width(800).quality(80).auto('format').url() : null;
+                    const imageUrl = a.certificateImage ? getProxyUrl(urlFor(a.certificateImage).width(800).quality(80).auto('format')) : null;
                     return {
                         label: a.title,
                         date: new Date(a.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
