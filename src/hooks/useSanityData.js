@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { sanityClient } from '../config/sanity';
+import { sanityClient, urlFor } from '../config/sanity';
 import { useTexture } from '@react-three/drei';
 import { useLoader } from '@react-three/fiber';
 import { TextureLoader } from 'three';
@@ -32,7 +32,7 @@ function notifyUpdate() {
 
 // Pomocniczy preloader dla zwykłych obrazków HTML (np. certyfikatów)
 const preloadBrowserImage = (path) => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined' || !path) return;
     const img = new Image();
     img.src = path;
 };
@@ -62,8 +62,8 @@ export function loadSanityData() {
                         "id": slug.current,
                         url,
                         description,
-                        "front": frontImage.asset->url,
-                        "painted": paintedImage.asset->url,
+                        frontImage,
+                        paintedImage,
                         techStack
                     }
                 `),
@@ -74,8 +74,8 @@ export function loadSanityData() {
                         platform,
                         description,
                         url,
-                        "frontTexture": frontTexture.asset->url,
-                        "paintedFrontTexture": paintedFrontTexture.asset->url,
+                        frontTexture,
+                        paintedFrontTexture,
                         date,
                         views,
                         likes,
@@ -88,37 +88,52 @@ export function loadSanityData() {
                     *[_type == "awardCertificate"] {
                         title,
                         category,
-                        "image": certificateImage.asset->url,
+                        certificateImage,
                         date,
                         url
                     } | order(date desc)
                 `)
             ]);
 
-            // Mapowanie danych galerii i techStack na ścieżki lokalne
+            // Mapowanie danych galerii i techStack na ścieżki lokalne oraz optymalizacja obrazków z Sanity
             if (projectsData && projectsData.length > 0) {
-                cache.projects = projectsData.map(p => ({
-                    ...p,
-                    techStack: p.techStack ? p.techStack.map(t => '/textures/gallery/' + t) : []
-                }));
+                cache.projects = projectsData.map(p => {
+                    const frontUrl = p.frontImage ? urlFor(p.frontImage).width(1024).quality(80).auto('format').url() : null;
+                    const paintedUrl = p.paintedImage ? urlFor(p.paintedImage).width(1024).quality(80).auto('format').url() : null;
+                    return {
+                        ...p,
+                        front: frontUrl,
+                        painted: paintedUrl,
+                        techStack: p.techStack ? p.techStack.map(t => '/textures/gallery/' + t) : []
+                    };
+                });
             }
 
-            // Mapowanie danych studio i przypisanie id
+            // Mapowanie danych studio, przypisanie id oraz optymalizacja obrazków z Sanity
             if (contentData && contentData.length > 0) {
-                cache.content = contentData.map((item, index) => ({
-                    ...item,
-                    id: item.platform + '-' + index
-                }));
+                cache.content = contentData.map((item, index) => {
+                    const frontTextureUrl = item.frontTexture ? urlFor(item.frontTexture).width(1024).quality(80).auto('format').url() : null;
+                    const paintedFrontTextureUrl = item.paintedFrontTexture ? urlFor(item.paintedFrontTexture).width(1024).quality(80).auto('format').url() : null;
+                    return {
+                        ...item,
+                        id: item.platform + '-' + index,
+                        frontTexture: frontTextureUrl,
+                        paintedFrontTexture: paintedFrontTextureUrl
+                    };
+                });
             }
 
-            // Mapowanie nagród do struktury oczekiwanej przez overlay
+            // Mapowanie nagród do struktury oczekiwanej przez overlay oraz optymalizacja certyfikatów z Sanity
             if (awardsData && awardsData.length > 0) {
-                const mapItems = (items) => items.map(a => ({
-                    label: a.title,
-                    date: new Date(a.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
-                    image: a.image,
-                    url: a.url || null
-                }));
+                const mapItems = (items) => items.map(a => {
+                    const imageUrl = a.certificateImage ? urlFor(a.certificateImage).width(800).quality(80).auto('format').url() : null;
+                    return {
+                        label: a.title,
+                        date: new Date(a.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+                        image: imageUrl,
+                        url: a.url || null
+                    };
+                });
 
                 cache.awards = {
                     sotd: {
