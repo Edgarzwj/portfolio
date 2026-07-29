@@ -424,7 +424,7 @@ const ContactRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                 rotation={[0, -0.2, 0]}
                 texturePath="/textures/contact/beczka.webp"
                 label="FACEBOOK"
-                onClick={() => window.open('https://www.facebook.com/tomasz.szmajda.58/', '_blank')}
+                onClick={() => window.open('https://www.facebook.com/people/ITom/61586563487664/', '_blank')}
                 paintOnBeforeCompile={onBeforeCompile}
                 paintUniforms={uniformsData}
             />
