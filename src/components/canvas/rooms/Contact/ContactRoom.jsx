@@ -248,6 +248,10 @@ const ContactRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
     }, [hasSignaledReady.current, showRoom, camera]);
 
     const handleMailSelect = () => {
+        // Awaryjne przekierowanie mailto:
+        window.location.href = 'mailto:tomszma12@gmail.com';
+
+        /* 
         setShowSelection(false);
 
         // Trigger the look down sequence
@@ -279,6 +283,7 @@ const ContactRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
         setTimeout(() => {
             setCurrentPhase(PHASE.WRITING);
         }, 1500);
+        */
     };
 
     // Frame Loop
