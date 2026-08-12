@@ -18,6 +18,9 @@ export const getProxyUrl = (imageBuilder) => {
     if (!imageBuilder) return null;
     const url = imageBuilder.url();
     if (url && typeof window !== 'undefined') {
+        // Dev: route through the local Vite proxy (/sanity-cdn -> cdn.sanity.io).
+        // Prod: no proxy exists, so hit the Sanity CDN directly.
+        if (import.meta.env.PROD) return url;
         return url.replace('https://cdn.sanity.io', '/sanity-cdn');
     }
     return url;

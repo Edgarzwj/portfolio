@@ -51,8 +51,8 @@ const PATH_TO_ROOM = {
  * Call this once at app startup to determine if we need to auto-teleport.
  */
 export function getInitialRoomFromUrl() {
-    const path = window.location.pathname.replace(/\/+$/, '') || '/';
-    return PATH_TO_ROOM[path] !== undefined ? PATH_TO_ROOM[path] : null;
+    const hash = window.location.hash.replace(/^#/, '').replace(/\/+$/, '') || '/';
+    return PATH_TO_ROOM[hash] !== undefined ? PATH_TO_ROOM[hash] : null;
 }
 
 export function useDocumentMeta() {
@@ -82,21 +82,21 @@ export function useDocumentMeta() {
         if (ogDesc) ogDesc.setAttribute('content', meta.description);
 
         const ogUrl = document.querySelector('meta[property="og:url"]');
-        if (ogUrl) ogUrl.setAttribute('content', `https://itomdev.com${meta.path}`);
+        if (ogUrl) ogUrl.setAttribute('content', `https://edgarzwj.github.io/portfolio${meta.path}`);
 
         // Update canonical link to ensure virtual routes are correctly indexable as separate pages
         const canonicalTag = document.querySelector('link[rel="canonical"]');
         if (canonicalTag) {
-            canonicalTag.setAttribute('href', `https://itomdev.com${meta.path}`);
+            canonicalTag.setAttribute('href', `https://edgarzwj.github.io/portfolio${meta.path}`);
         }
 
         // Push to browser history (only if not handling a popstate event and room actually changed)
         if (!isHandlingPopState.current && lastPushedRoom.current !== currentRoom) {
             // Use replaceState for the very first load, pushState for subsequent navigations
             if (lastPushedRoom.current === undefined) {
-                window.history.replaceState({ room: currentRoom }, '', meta.path);
+                window.history.replaceState({ room: currentRoom }, '', '#' + meta.path);
             } else {
-                window.history.pushState({ room: currentRoom }, '', meta.path);
+                window.history.pushState({ room: currentRoom }, '', '#' + meta.path);
             }
             lastPushedRoom.current = currentRoom;
         }
