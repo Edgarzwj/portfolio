@@ -9,7 +9,7 @@ import { isTouchDevice } from '../../../../utils/deviceDetect';
 // Reusable Vector3 to avoid allocations in useFrame
 const _tempScale = new THREE.Vector3();
 
-const SocialBarrel = ({ position, rotation = [0, 0, 0], texturePath, label, onClick, scale = [2.12, 2.3], paintOnBeforeCompile, paintUniforms }) => {
+const SocialBarrel = ({ position, rotation = [0, 0, 0], texturePath, label, onClick, scale = [2.12, 2.3], color = "#111111", paintOnBeforeCompile, paintUniforms }) => {
     const meshRef = useRef();
     const materialRef = useRef();
     const paintedRef = useRef();
@@ -145,7 +145,7 @@ const SocialBarrel = ({ position, rotation = [0, 0, 0], texturePath, label, onCl
                     rotation={[0, 0, 0.03]} // Slight tilt to match a drawn wooden board
                     fontSize={scale[0] * 0.14}
                     font="/fonts/CabinSketch-Bold.ttf"
-                    color="#111111"
+                    color={color}
                     fillOpacity={paintUniforms ? 0 : 1}
                     anchorX="center"
                     anchorY="middle"

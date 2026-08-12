@@ -6,6 +6,7 @@ import { setMusicVolume, getMusicVolume } from '../../utils/audioManager';
 import { useAchievements } from '../../context/AchievementsContext';
 import AchievementPopup from './AchievementPopup';
 import AchievementsPanel from './AchievementsPanel';
+import { useLanguage } from '../../i18n/LanguageContext';
 import '../../styles/NavigationUI.scss';
 
 // Room data for the map - positions are percentages on the map image
@@ -22,6 +23,9 @@ const PIN_START_POSITION = { x: 50.5, y: 97 };
 
 const NavigationUI = () => {
     const { currentRoom, isInRoom, requestExit, hasEntered, teleportTo, isTeleporting } = useScene();
+    const { t } = useLanguage();
+    // Translate a room id into its localized label
+    const roomLabel = (id) => t(`nav${id.charAt(0).toUpperCase()}${id.slice(1)}`);
     const { isMuted, toggleMute, globalVolume, setGlobalVolume } = useAudio();
     const { showTutorial, unlockAchievement } = useAchievements();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -317,7 +321,7 @@ const NavigationUI = () => {
 
                     <div className="map-content-clipped">
                         <div className="map-header">
-                            <h3>MAP</h3>
+                            <h3>{t('navMap')}</h3>
                             <button
                                 ref={mapCloseRef}
                                 className="close-btn"
@@ -348,7 +352,7 @@ const NavigationUI = () => {
                                 onFocus={() => setHoveredRoom('about')}
                                 onBlur={() => setHoveredRoom(null)}
                                 onClick={() => handleRoomClick('about')}
-                                aria-label="Teleport to About room"
+                                aria-label={`Teleport to ${roomLabel('about')} room`}
                             />
                             <button
                                 type="button"
@@ -358,7 +362,7 @@ const NavigationUI = () => {
                                 onFocus={() => setHoveredRoom('gallery')}
                                 onBlur={() => setHoveredRoom(null)}
                                 onClick={() => handleRoomClick('gallery')}
-                                aria-label="Teleport to Gallery room"
+                                aria-label={`Teleport to ${roomLabel('gallery')} room`}
                             />
                             <button
                                 type="button"
@@ -368,7 +372,7 @@ const NavigationUI = () => {
                                 onFocus={() => setHoveredRoom('contact')}
                                 onBlur={() => setHoveredRoom(null)}
                                 onClick={() => handleRoomClick('contact')}
-                                aria-label="Teleport to Contact room"
+                                aria-label={`Teleport to ${roomLabel('contact')} room`}
                             />
                             <button
                                 type="button"
@@ -378,14 +382,14 @@ const NavigationUI = () => {
                                 onFocus={() => setHoveredRoom('studio')}
                                 onBlur={() => setHoveredRoom(null)}
                                 onClick={() => handleRoomClick('studio')}
-                                aria-label="Teleport to Studio room"
+                                aria-label={`Teleport to ${roomLabel('studio')} room`}
                             />
 
                             {/* Permanent Map Text Labels */}
-                            <div className="map-room-label about">ABOUT</div>
-                            <div className="map-room-label gallery">THE<br />GALLERY</div>
-                            <div className="map-room-label contact">CONTACT</div>
-                            <div className="map-room-label studio">THE<br />STUDIO</div>
+                            <div className="map-room-label about">{t('navAbout')}</div>
+                            <div className="map-room-label gallery">THE<br />{t('navGallery')}</div>
+                            <div className="map-room-label contact">{t('navContact')}</div>
+                            <div className="map-room-label studio">THE<br />{t('navStudio')}</div>
 
                             {/* Pin slot markers - 4 locations */}
                             {ROOMS.map((room) => (
@@ -396,7 +400,7 @@ const NavigationUI = () => {
                                     onClick={() => handleRoomClick(room.id)}
                                     onMouseEnter={() => setHoveredRoom(room.id)}
                                     onMouseLeave={() => setHoveredRoom(null)}
-                                    title={room.label}
+                                    title={roomLabel(room.id)}
                                 >
                                     <img src="/images/pin-slot.webp" alt="" className="slot-image" />
                                 </button>
@@ -432,7 +436,7 @@ const NavigationUI = () => {
                 <div className={`audio-panel ${isAudioMenuOpen ? 'open' : ''}`} inert={!isAudioMenuOpen ? true : undefined}>
                     <div className="audio-card">
                         <div className="audio-header">
-                            <h3>AUDIO SETTINGS</h3>
+                            <h3>{t('navAudio')}</h3>
                             <button
                                 className="close-btn"
                                 onClick={() => setIsAudioMenuOpen(false)}

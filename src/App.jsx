@@ -219,6 +219,7 @@ function AppContent() {
 }
 
 import { AchievementsProvider } from './context/AchievementsContext';
+import { LanguageProvider } from './i18n/LanguageContext';
 
 export default function App() {
   // Preload browser-based images (for standard <img> tags) immediately upon mounting App
@@ -233,10 +234,12 @@ export default function App() {
   }, []);
 
   return (
-    <PerformanceProvider>
-      <AchievementsProvider>
-        <AppContent />
-      </AchievementsProvider>
-    </PerformanceProvider>
+    <LanguageProvider>
+      <PerformanceProvider>
+        <AchievementsProvider>
+          <AppContent />
+        </AchievementsProvider>
+      </PerformanceProvider>
+    </LanguageProvider>
   );
 }

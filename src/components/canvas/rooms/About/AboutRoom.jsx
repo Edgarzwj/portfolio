@@ -24,11 +24,12 @@ export const AUDIO_SETTINGS = {
 
 // Story sections - positions define where each milestone appears
 // Using CHUNK_LENGTH to create looping story (every ~40 units restarts)
+// TODO: 替换为你的真实信息（姓名 / 标语 / 经历 / 技能）。
 const STORY_MILESTONES = [
-    { id: 'intro', position: [0, 0, -15], type: 'intro', title: 'ITOM', subtitle: '< creative developer />' },
-    { id: 'awards', position: [0, 0, -55], type: 'awards', title: 'AWARDS', subtitle: '1x SOTD Winner • 1x CSS Winner' },
-    { id: 'journey', position: [0, 0, -95], type: 'journey', title: 'JOURNEY', subtitle: 'Computer Science @ University of Opole' },
-    { id: 'skills', position: [0, 0, -135], type: 'skills', title: 'SKILLS', subtitle: 'React • Three.js • GSAP • Creative Code' },
+    { id: 'intro', position: [0, 0, -15], type: 'intro', title: 'EDGAR', subtitle: '< indie game & full-stack dev />' },
+    { id: 'awards', position: [0, 0, -55], type: 'awards', title: 'AWARDS', subtitle: 'Replace with your honors' },
+    { id: 'journey', position: [0, 0, -95], type: 'journey', title: 'JOURNEY', subtitle: 'Your education / story' },
+    { id: 'skills', position: [0, 0, -135], type: 'skills', title: 'SKILLS', subtitle: 'React • Three.js • GSAP • Game Dev' },
 ];
 
 const AboutRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {

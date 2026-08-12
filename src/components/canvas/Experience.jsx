@@ -8,6 +8,7 @@ import TeleportRoom from './corridor/TeleportRoom';
 import RoomWarmup from './corridor/RoomWarmup';
 import useInfiniteCamera from '../../hooks/useInfiniteCamera';
 import SignSystem from './entrance/SignSystem';
+import LanguageFrame from './entrance/LanguageFrame';
 import { useScene } from '../../context/SceneContext';
 
 // Positioning:
@@ -97,6 +98,11 @@ const Experience = ({ isLoaded, onSceneReady, performanceTier }) => {
             {/* Separate SignSystem to avoid fragment nesting issues if any */}
             {!hasEntered && (
                 <SignSystem position={[0, 0, ENTRANCE_DOORS_Z]} />
+            )}
+
+            {/* Language toggle frame on the entrance wall (tap to switch EN/中文) */}
+            {!hasEntered && (
+                <LanguageFrame position={[-5.3, 2.2, 22.4]} />
             )}
 
             {/* === INFINITE CORRIDOR (segment -1 SegmentDoors hidden during entrance) === */}

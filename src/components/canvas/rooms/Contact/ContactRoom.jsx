@@ -397,54 +397,64 @@ const ContactRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                 ))}
             </group>
 
-            {/* 🛢️ SOCIAL BARRELS (Floating in water) */}
-            {/* LINKEDIN */}
-            <SocialBarrel
-                position={isMobile ? [-1.2, 0.5, -10] : [-3, 0.5, -10]}
-                rotation={[0, 0.2, 0]}
-                texturePath="/textures/contact/beczka.webp"
-                label="LINKEDIN"
-                onClick={() => window.open('https://www.linkedin.com/in/tomasz-szmajda-259337305/', '_blank')}
-                paintOnBeforeCompile={onBeforeCompile}
-                paintUniforms={uniformsData}
-            />
+            {/* 🛢️ SOCIAL BARRELS (Floating in water) — 联系方式 */}
             {/* GITHUB */}
             <SocialBarrel
-                position={isMobile ? [-1.5, -0.3, -7] : [-5, -0.3, -8]}
+                position={isMobile ? [-2.5, -0.3, -7] : [-5, -0.3, -8]}
                 rotation={[0, 0.3, 0]}
                 texturePath="/textures/contact/beczka.webp"
                 label="GITHUB"
-                onClick={() => window.open('https://github.com/ITomPoland', '_blank')}
+                color="#1f6feb"
+                onClick={() => window.open('https://github.com/Edgarzwj', '_blank')}
                 paintOnBeforeCompile={onBeforeCompile}
                 paintUniforms={uniformsData}
             />
-            {/* FACEBOOK */}
+            {/* EMAIL */}
             <SocialBarrel
-                position={isMobile ? [1.2, 0.5, -10] : [3, 0.5, -10]}
+                position={isMobile ? [-1.5, 0.5, -9] : [-3, 0.5, -10]}
+                rotation={[0, 0.2, 0]}
+                texturePath="/textures/contact/beczka.webp"
+                label="EMAIL"
+                color="#1f6feb"
+                onClick={() => window.open('mailto:15756568469@163.com', '_blank')}
+                paintOnBeforeCompile={onBeforeCompile}
+                paintUniforms={uniformsData}
+            />
+            {/* QQ */}
+            <SocialBarrel
+                position={isMobile ? [-0.5, -0.3, -7] : [-1, -0.3, -8]}
+                rotation={[0, 0.1, 0]}
+                texturePath="/textures/contact/beczka.webp"
+                label="QQ"
+                color="#1f6feb"
+                onClick={() => window.open('https://wpa.qq.com/msgrd?v=3&uin=1406675351', '_blank')}
+                paintOnBeforeCompile={onBeforeCompile}
+                paintUniforms={uniformsData}
+            />
+            {/* LINKEDIN (placeholder — 后期补充地址后再上色) */}
+            <SocialBarrel
+                position={isMobile ? [0.5, 0.5, -9] : [1, 0.5, -10]}
+                rotation={[0, -0.1, 0]}
+                texturePath="/textures/contact/beczka.webp"
+                label="LINKEDIN"
+                paintOnBeforeCompile={onBeforeCompile}
+                paintUniforms={uniformsData}
+            />
+            {/* LINE (placeholder — 后期补充地址后再上色) */}
+            <SocialBarrel
+                position={isMobile ? [1.5, -0.3, -7] : [3, -0.3, -8]}
                 rotation={[0, -0.2, 0]}
                 texturePath="/textures/contact/beczka.webp"
-                label="FACEBOOK"
-                onClick={() => window.open('https://www.facebook.com/people/ITom/61586563487664/', '_blank')}
+                label="LINE"
                 paintOnBeforeCompile={onBeforeCompile}
                 paintUniforms={uniformsData}
             />
-            {/* INSTAGRAM */}
+            {/* INSTAGRAM (placeholder — 后期补充地址后再上色) */}
             <SocialBarrel
-                position={isMobile ? [1.5, -0.3, -7] : [5, -0.3, -8]}
+                position={isMobile ? [2.5, 0.5, -9] : [5, 0.5, -10]}
                 rotation={[0, -0.3, 0]}
                 texturePath="/textures/contact/beczka.webp"
                 label="INSTAGRAM"
-                onClick={() => window.open('https://www.instagram.com/itom.dev/', '_blank')}
-                paintOnBeforeCompile={onBeforeCompile}
-                paintUniforms={uniformsData}
-            />
-            {/* MAIL (Triggers animation) */}
-            <SocialBarrel
-                position={isMobile ? [0, -0.7, -6] : [0, -0.7, -7]}
-                rotation={[0, 0, 0]}
-                texturePath="/textures/contact/beczka.webp"
-                label="MESSAGE"
-                onClick={handleMailSelect}
                 paintOnBeforeCompile={onBeforeCompile}
                 paintUniforms={uniformsData}
             />

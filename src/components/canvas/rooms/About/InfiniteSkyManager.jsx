@@ -8,6 +8,8 @@ import { useScene } from '../../../../context/SceneContext';
 import '../../shaders/RevealBasicMaterial'; // Registers brush-stroke reveal for BasicMaterial
 import { isTouchDevice } from '../../../../utils/deviceDetect';
 import { useAwards } from '../../../../hooks/useSanityData';
+import { useLanguage } from '../../../../i18n/LanguageContext';
+import I18nText3D from '../../../canvas/common/I18nText3D';
 
 // Reusable Vector3 to avoid allocations in event handlers
 const _tempVec3 = new THREE.Vector3();
@@ -262,6 +264,7 @@ const IntroMilestone = ({ z, scrollProgressRef }) => {
     const avatarTexture = useLoader(THREE.TextureLoader, '/textures/about/awatarnachmurce.webp');
     const { camera, viewport } = useThree();
     const isTouch = isTouchDevice();
+    const { t } = useLanguage();
 
     // Refs for all animated elements
     const groupRef = useRef();
@@ -352,7 +355,7 @@ const IntroMilestone = ({ z, scrollProgressRef }) => {
                 anchorY="middle"
                 font="/fonts/RubikScribble-Regular.ttf"
             >
-                TOMASZ SZMAJDA
+                EDGAR ZWJ
             </Text>
 
             {/* Subtitle - Brand (spreads right) */}
@@ -365,7 +368,7 @@ const IntroMilestone = ({ z, scrollProgressRef }) => {
                 anchorY="middle"
                 font="/fonts/CabinSketch-Regular.ttf"
             >
-                (ITOM)
+                (EDGAR)
             </Text>
 
             {/* Avatar on cloud - floating + spreads up-left */}
@@ -380,32 +383,32 @@ const IntroMilestone = ({ z, scrollProgressRef }) => {
             </mesh>
 
             {/* Motto - Line 1 (spreads right) */}
-            <Text
+            <I18nText3D
                 ref={motto1Ref}
+                en={'"Building games & tools'}
+                zh={t('aboutMotto1')}
                 position={[0, 0, 0.1]}
                 fontSize={0.32}
                 color="#555555"
                 anchorX="center"
                 anchorY="middle"
-                font="/fonts/CabinSketch-Regular.ttf"
-                fontStyle="italic"
-            >
-                "Crafting digital experiences
-            </Text>
+                sketchFont="/fonts/CabinSketch-Regular.ttf"
+                italic
+            />
 
             {/* Motto - Line 2 (spreads left) */}
-            <Text
+            <I18nText3D
                 ref={motto2Ref}
+                en={'that respect the player"'}
+                zh={t('aboutMotto2')}
                 position={[0, -0.5, 0]}
                 fontSize={0.32}
                 color="#555555"
                 anchorX="center"
                 anchorY="middle"
-                font="/fonts/CabinSketch-Regular.ttf"
-                fontStyle="italic"
-            >
-                that push creative boundaries"
-            </Text>
+                sketchFont="/fonts/CabinSketch-Regular.ttf"
+                italic
+            />
         </group>
     );
 };
@@ -418,12 +421,7 @@ const AWARDS_DATA = {
         id: 'award-featured',
         layout: 'certificate_grid',
         title: 'Featured Projects Collection',
-        items: [
-            { label: 'Featured - Awwwards', date: 'May 2025', image: '/textures/about/FEATURED.webp', url: 'https://awwwards.com' },
-            { label: 'Featured - CSS Design Awards', date: 'June 2025', image: '/textures/about/FEATURED.webp', url: 'https://cssdesignawards.com' },
-            { label: 'Featured - The FWA', date: 'July 2025', image: '/textures/about/FEATURED.webp', url: 'https://thefwa.com' },
-            { label: 'Featured - Behance', date: 'August 2025', image: '/textures/about/FEATURED.webp', url: 'https://behance.net' },
-        ],
+        items: [],
         platformConfig: {
             label: 'HONOR',
             color: '#1a1a1a',
@@ -434,12 +432,7 @@ const AWARDS_DATA = {
         id: 'award-sotd',
         layout: 'certificate_grid',
         title: 'Site of the Day Awards',
-        items: [
-            { label: 'SOTD - GSAP', date: 'February 13, 2026', image: '/textures/about/SOTDAYYOUNGMULTIGSAP.webp', url: 'https://www.linkedin.com/posts/greensock_site-of-the-day-young-multi-this-immersive-activity-7427567524940017664-zU2n?utm_source=share&utm_medium=member_desktop&rcm=ACoAAE3TV6UBqXoaJXUN5-1s3ij6SQJwTRAcbCM' },
-            { label: 'SOTD - CSS Winner', date: 'January 24, 2026', image: '/textures/about/SOTDAYYOUNGMULTICSSWINNER.webp', url: 'https://www.csswinner.com/details/young-multi-official-experience/19045' },
-            { label: 'SOTD - Orpetron', date: 'January 29, 2026', image: '/textures/about/SOTDAYYOUNGMULTIORPETRON.webp', url: 'https://orpetron.com/sites/young-multi/' },
-            { label: 'SOTD - Design Nominess', date: 'February 17, 2026', image: '/textures/about/SOTDAYYOUNGMULTIDESIGNNOMINESS.webp', url: 'https://www.designnominees.com/sites/young-multi' }
-        ],
+        items: [],
         platformConfig: {
             label: 'AWARD',
             color: '#1a1a1a',
@@ -482,6 +475,7 @@ const AwardsMilestone = ({ z, scrollProgressRef }) => {
     const { camera, viewport } = useThree();
     const isTouch = isTouchDevice();
     const { openOverlay } = useScene();
+    const { t } = useLanguage();
     const groupRef = useRef();
     const sotyRef = useRef();
     const sotdRef = useRef();
@@ -616,16 +610,16 @@ const AwardsMilestone = ({ z, scrollProgressRef }) => {
     return (
         <group ref={groupRef} position={[0, 2, z]}>
             {/* Title */}
-            <Text
+            <I18nText3D
                 position={[0, 4, 0]}
+                en="AWARDS"
+                zh={t('aboutAwards')}
                 fontSize={1.2}
                 color="#1a1a1a"
                 anchorX="center"
                 anchorY="middle"
-                font="/fonts/RubikScribble-Regular.ttf"
-            >
-                AWARDS
-            </Text>
+                sketchFont="/fonts/RubikScribble-Regular.ttf"
+            />
 
             {/* === SOTD (behind SOTY, rendered second) === */}
             <group ref={sotdRef} position={[0, 0.5, -0.5]}>
@@ -819,6 +813,7 @@ const AwardsMilestone = ({ z, scrollProgressRef }) => {
 const JourneyMilestone = ({ z, scrollProgressRef }) => {
     const { camera, viewport } = useThree();
     const isTouch = isTouchDevice();
+    const { t } = useLanguage();
     const groupRef = useRef();
     const uoRef = useRef();
     const freelanceRef = useRef();
@@ -895,28 +890,28 @@ const JourneyMilestone = ({ z, scrollProgressRef }) => {
     return (
         <group ref={groupRef} position={[0, 0, z]}>
             {/* Title */}
-            <Text
+            <I18nText3D
                 position={[0, 5, 0.3]}
+                en="JOURNEY"
+                zh={t('aboutJourney')}
                 fontSize={1.2}
                 color="#1a1a1a"
                 anchorX="center"
                 anchorY="middle"
-                font="/fonts/RubikScribble-Regular.ttf"
-            >
-                JOURNEY
-            </Text>
+                sketchFont="/fonts/RubikScribble-Regular.ttf"
+            />
 
             {/* Subtitle */}
-            <Text
+            <I18nText3D
                 position={[0, 4.2, 0.3]}
+                en="My path so far..."
+                zh={t('aboutJourneySub')}
                 fontSize={0.35}
                 color="#555555"
                 anchorX="center"
                 anchorY="middle"
-                font="/fonts/CabinSketch-Regular.ttf"
-            >
-                My path so far...
-            </Text>
+                sketchFont="/fonts/CabinSketch-Regular.ttf"
+            />
 
             {/* === UO ISLAND (Left) === */}
             <group ref={uoRef} position={[-3.5, -1, 0]}>
@@ -1334,6 +1329,7 @@ const SkillBalloon = ({ config, revealFactorRef, spreadFactorRef, timeRef }) => 
 const SkillsMilestone = ({ z, scrollProgressRef }) => {
     const { camera, viewport } = useThree();
     const isTouch = isTouchDevice();
+    const { t } = useLanguage();
     const groupRef = useRef();
     // P2: Use refs instead of state to avoid 60 re-renders/sec inside useFrame
     const revealFactorRef = useRef(0);
@@ -1391,28 +1387,28 @@ const SkillsMilestone = ({ z, scrollProgressRef }) => {
     return (
         <group ref={groupRef} position={[0, 0, z]}>
             {/* Title */}
-            <Text
+            <I18nText3D
                 position={[0, 6, 0.5]}
+                en="SKILLS"
+                zh={t('aboutSkills')}
                 fontSize={1.2}
                 color="#1a1a1a"
                 anchorX="center"
                 anchorY="middle"
-                font="/fonts/RubikScribble-Regular.ttf"
-            >
-                SKILLS
-            </Text>
+                sketchFont="/fonts/RubikScribble-Regular.ttf"
+            />
 
             {/* Subtitle */}
-            <Text
+            <I18nText3D
                 position={[0, 5.2, 0.5]}
+                en="Technologies I love working with"
+                zh={t('aboutSkillsSub')}
                 fontSize={0.35}
                 color="#555555"
                 anchorX="center"
                 anchorY="middle"
-                font="/fonts/CabinSketch-Regular.ttf"
-            >
-                Technologies I love working with
-            </Text>
+                sketchFont="/fonts/CabinSketch-Regular.ttf"
+            />
 
             {/* === FLOATING BALLOONS === */}
             {BALLOON_CONFIG.map((config, index) => (

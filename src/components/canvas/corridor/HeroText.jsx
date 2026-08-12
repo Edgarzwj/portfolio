@@ -2,6 +2,8 @@ import { useRef, useMemo, useState, useEffect } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
 import * as THREE from 'three';
+import { useLanguage } from '../../../i18n/LanguageContext';
+import I18nText3D from '../common/I18nText3D';
 
 // Local fonts for sketch-style typography (TTF format required by troika)
 const RUBIK_SCRIBBLE_URL = '/fonts/RubikScribble-Regular.ttf';
@@ -62,13 +64,20 @@ const HeroText = ({ position = [0, 0.3, 0] }) => {
         { char: 'M', baseX: 0.95, splitDir: 1.8, delay: 0 },
     ], []);
 
-    // Tagline words for split effect
-    const taglineWords = useMemo(() => [
-        { text: '<', baseX: -0.85, splitDir: -1.5, delay: 0 },
-        { text: 'creative', baseX: -0.4, splitDir: -0.8, delay: 0 },
-        { text: 'developer', baseX: 0.4, splitDir: 0.8, delay: 0 },
-        { text: '/>', baseX: 0.85, splitDir: 1.5, delay: 0 },
-    ], []);
+    // Tagline words for split effect (language-aware)
+    const { language } = useLanguage();
+    const taglineWords = useMemo(() => {
+        if (language === 'zh') {
+            // Single centered line in Chinese (no per-letter split needed)
+            return [{ text: '< 独立游戏 & 全栈开发 />', baseX: 0, splitDir: 0, delay: 0 }];
+        }
+        return [
+            { text: '<', baseX: -0.85, splitDir: -1.5, delay: 0 },
+            { text: 'creative', baseX: -0.4, splitDir: -0.8, delay: 0 },
+            { text: 'developer', baseX: 0.4, splitDir: 0.8, delay: 0 },
+            { text: '/>', baseX: 0.85, splitDir: 1.5, delay: 0 },
+        ];
+    }, [language]);
 
     // Animation loop
     useFrame((state, delta) => {
@@ -150,21 +159,21 @@ const HeroText = ({ position = [0, 0.3, 0] }) => {
                 </Text>
             ))}
 
-            {/* Tagline words - Cabin Sketch font with fade-in animation */}
+            {/* Tagline words - Cabin Sketch font (EN) / canvas (ZH) */}
             {taglineWords.map((word, i) => (
-                <Text
-                    key={word.text}
+                <I18nText3D
+                    key={`${language}-${i}`}
                     ref={(el) => (taglineRefs.current[i] = el)}
+                    en={word.text}
+                    zh={word.text}
                     position={[word.baseX, -0.55, 0.3]}
                     fontSize={0.16}
-                    font={CABIN_SKETCH_URL}
+                    sketchFont={CABIN_SKETCH_URL}
                     color="#555555"
                     anchorX="center"
                     anchorY="middle"
                     letterSpacing={0.04}
-                >
-                    {word.text}
-                </Text>
+                />
             ))}
 
             {/* Small decorative doodles around title */}

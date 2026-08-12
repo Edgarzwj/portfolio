@@ -34,41 +34,42 @@ export const GALLERY_INTERACTION_AUDIO_SETTINGS = {
 };
 
 // Define the unique projects and their textures
+// TODO: 替换为你的真实项目（图片/文案/链接）。当前为占位。
 const FALLBACK_PROJECTS = [
     {
-        id: 'monetune',
-        title: 'MONETUNE',
-        front: '/textures/gallery/monetuneprzod.webp',
-        painted: '/textures/gallery/monetuneprzod_painted.webp',
-        url: 'https://monetune.pl',
-        description: 'MoneTune is a step-by-step blueprint that teaches beginners how to generate passive income using AI-created music. Without any musical skills, you will learn how to easily produce professional tracks, publish them on platforms like Spotify, and monetize your digital assets.',
-        techStack: ['/textures/gallery/wordpresslogo.webp', '/textures/gallery/elementorlogo.webp', '/textures/gallery/phplogo.webp', '/textures/gallery/csslogo.webp']
+        id: 'onestrike',
+        title: 'ONE STRIKE · 一太刀',
+        front: '/textures/gallery/onestrike_przod.webp',
+        painted: '/textures/gallery/onestrike_przod_painted.webp',
+        url: 'https://github.com/Edgarzwj',
+        description: '像素水墨风武士浏览器游戏，目标移动端 + 支持作者变现。TODO：替换为真实文案、截图与链接。',
+        techStack: ['/textures/gallery/reactlogo.webp', '/textures/gallery/jslogo.webp', '/textures/gallery/htmllogo.webp', '/textures/gallery/csslogo.webp']
     },
     {
-        id: 'timber',
-        title: 'TIMBERKITTY',
-        front: '/textures/gallery/timberkittyprzod.webp',
-        painted: '/textures/gallery/timberkittyprzod_painted.webp',
-        url: 'https://timberkitty.netlify.app',
-        description: 'TimberKitty is an addictive, free-to-play browser arcade game built in pure JavaScript. Players control a lumberjack cat to chop wood, save birds, complete daily missions, and compete on global leaderboards.',
-        techStack: ['/textures/gallery/jslogo.webp', '/textures/gallery/htmllogo.webp', '/textures/gallery/csslogo.webp', '/textures/gallery/firebaselogo.webp']
+        id: 'deaify',
+        title: 'DEAIFY',
+        front: '/textures/gallery/deaify_przod.webp',
+        painted: '/textures/gallery/deaify_przod_painted.webp',
+        url: 'https://github.com/Edgarzwj/deaify',
+        description: '面向算法代码的「去 AI 化」技能套件，让 AI 生成/改写的代码读起来像人写的。TODO：替换真实文案。',
+        techStack: ['/textures/gallery/jslogo.webp', '/textures/gallery/htmllogo.webp', '/textures/gallery/csslogo.webp']
     },
     {
-        id: 'young',
-        title: 'YOUNG MULTI',
-        front: '/textures/gallery/youngmultiprzod.webp',
-        painted: '/textures/gallery/youngmultiprzod_painted.webp',
-        url: 'https://young-multi-strona.netlify.app',
-        description: 'A sleek, modern concept website dedicated to the Polish rapper and creator Young Multi. It serves as a promotional landing page designed to highlight his personal brand, music, and online presence.',
-        techStack: ['/textures/gallery/reactlogo.webp', '/textures/gallery/tailwindlogo.webp', '/textures/gallery/htmllogo.webp', '/textures/gallery/netlifylogo.webp']
+        id: 'noveltoscript',
+        title: 'NOVEL>SCRIPT',
+        front: '/textures/gallery/noveltoscript_przod.webp',
+        painted: '/textures/gallery/noveltoscript_przod_painted.webp',
+        url: 'https://github.com/Edgarzwj/novel-to-script',
+        description: 'AI 小说转剧本工具，已开源。TODO：替换真实文案与截图。',
+        techStack: ['/textures/gallery/reactlogo.webp', '/textures/gallery/tailwindlogo.webp', '/textures/gallery/netlifylogo.webp']
     },
     {
-        id: 'bio',
-        title: 'BIO',
-        front: '/textures/gallery/bioprzod.webp',
-        painted: '/textures/gallery/bioprzod_painted.webp',
-        url: 'https://tomkingbio.netlify.app',
-        description: 'A fast, modern personal bio page serving as a central hub for my digital footprint. It showcases my latest coding projects, web development services, YouTube videos, and recommended music artists.',
+        id: 'datapool',
+        title: 'DATA POOL · 数据池',
+        front: '/textures/gallery/datapool_przod.webp',
+        painted: '/textures/gallery/datapool_przod_painted.webp',
+        url: 'https://github.com/Edgarzwj',
+        description: '数据池前端管理界面，维护 skill/ 规则库（design-rules、rules-index、design-systems）。TODO：替换真实链接。',
         techStack: ['/textures/gallery/htmllogo.webp', '/textures/gallery/csslogo.webp', '/textures/gallery/jslogo.webp', '/textures/gallery/netlifylogo.webp']
     },
 ];
