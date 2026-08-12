@@ -249,7 +249,7 @@ const ContactRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
 
     const handleMailSelect = () => {
         // Awaryjne przekierowanie mailto:
-        window.location.href = 'mailto:tomszma12@gmail.com';
+        window.location.href = 'mailto:15756568469@163.com';
 
         /* 
         setShowSelection(false);
@@ -455,6 +455,17 @@ const ContactRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                 rotation={[0, -0.3, 0]}
                 texturePath="/textures/contact/beczka.webp"
                 label="INSTAGRAM"
+                paintOnBeforeCompile={onBeforeCompile}
+                paintUniforms={uniformsData}
+            />
+            {/* DOUYIN (active — 抖音账号 @Edgarzmore) */}
+            <SocialBarrel
+                position={isMobile ? [3.5, -0.3, -7] : [7, -0.3, -8]}
+                rotation={[0, -0.25, 0]}
+                texturePath="/textures/contact/beczka.webp"
+                label="DOUYIN"
+                color="#1f6feb"
+                onClick={() => window.open('https://www.douyin.com/search/Edgarzmore', '_blank')}
                 paintOnBeforeCompile={onBeforeCompile}
                 paintUniforms={uniformsData}
             />
