@@ -10,6 +10,7 @@ import { initAudio } from './utils/audioManager';
 import { PerformanceProvider, usePerformance } from './context/PerformanceContext';
 import { SceneProvider, useScene } from './context/SceneContext';
 import NavigationUI from './components/ui/NavigationUI';
+import LanguageToggleButton from './components/ui/LanguageToggleButton';
 import GlobalOverlay from './components/ui/GlobalOverlay';
 import ScreenReaderOverlay from './components/ui/ScreenReaderOverlay';
 import { useDocumentMeta } from './hooks/useDocumentMeta';
@@ -201,6 +202,7 @@ function AppContent() {
           {isLoaded && (
             <>
               <NavigationUI />
+              <LanguageToggleButton />
               <GlobalOverlay />
               <PaperTransition />
               <ScreenReaderOverlay />

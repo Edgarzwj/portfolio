@@ -100,9 +100,12 @@ const Experience = ({ isLoaded, onSceneReady, performanceTier }) => {
                 <SignSystem position={[0, 0, ENTRANCE_DOORS_Z]} />
             )}
 
-            {/* Language toggle frame on the entrance wall (tap to switch EN/中文) */}
+            {/* Language toggle frame on the entrance wall (tap to switch EN/中文).
+                Placed on the right brick wall, clear of the door/window/bug hitboxes
+                and well within the desktop/landscape viewport. On narrow portrait
+                screens an HTML fallback button (top-center) covers the switch. */}
             {!hasEntered && (
-                <LanguageFrame position={[-5.3, 2.2, 22.4]} />
+                <LanguageFrame position={[3.5, 1.9, 22.5]} />
             )}
 
             {/* === INFINITE CORRIDOR (segment -1 SegmentDoors hidden during entrance) === */}
