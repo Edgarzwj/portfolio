@@ -16,9 +16,15 @@ dist-root
 out-root
 build-cloud
 cloud-*
+cld-*
 *.idx
 .sitedir.txt
 _writetest.txt
+_local_js.js
+_online_js.js
+_verify_index.html
+.preview.log
+.cloud_dir.txt
 *.local
 
 # dotenv environment variables file
