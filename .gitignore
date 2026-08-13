@@ -16,6 +16,9 @@ dist-root
 out-root
 build-cloud
 cloud-*
+*.idx
+.sitedir.txt
+_writetest.txt
 *.local
 
 # dotenv environment variables file
