@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
-import { sanityClient, urlFor, getProxyUrl } from '../config/sanity';
+import { sanityClient, urlFor, getProxyUrl, isSanityConfigured } from '../config/sanity';
 import { useTexture } from '@react-three/drei';
 import { useLoader } from '@react-three/fiber';
 import { TextureLoader } from 'three';
 
-// Flaga bezpieczeństwa: Jeśli użytkownik nie wpisał jeszcze Project ID, 
+// Flaga bezpieczeństwa: Jeśli użytkownik nie wpisał jeszcze Project ID,
 // hooki zwrócą null, co pozwoli na załadowanie danych hardcodowanych (fallback).
-export const isSanityConfigured = sanityClient.config().projectId !== 'YOUR_PROJECT_ID';
+// (isSanityConfigured pochodzi z ../config/sanity — nie wywołujemy sanityClient.config(),
+//  bo przy wyłączonym Sanity sanityClient === null i wywołanie by rzuciło błędem.)
 
 // Globalny cache dla danych z Sanity
 const cache = {

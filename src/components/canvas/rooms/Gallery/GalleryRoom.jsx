@@ -35,42 +35,62 @@ export const GALLERY_INTERACTION_AUDIO_SETTINGS = {
 
 // Define the unique projects and their textures
 // TODO: 替换为你的真实项目（图片/文案/链接）。当前为占位。
+// 真实项目：来自 github.com/Edgarzwj（张万江 / Edgar）
+// 封面图暂复用仓库内现成 *_przod.webp 占位（后续可替换为各项目真实截图）
 const FALLBACK_PROJECTS = [
     {
-        id: 'onestrike',
-        title: 'ONE STRIKE · 一太刀',
+        id: 'flowboard',
+        title: 'FLOWBOARD · 协作白板',
         front: '/textures/gallery/onestrike_przod.webp',
         painted: '/textures/gallery/onestrike_przod_painted.webp',
-        url: 'https://github.com/Edgarzwj',
-        description: '像素水墨风武士浏览器游戏，目标移动端 + 支持作者变现。TODO：替换为真实文案、截图与链接。',
-        techStack: ['/textures/gallery/reactlogo.webp', '/textures/gallery/jslogo.webp', '/textures/gallery/htmllogo.webp', '/textures/gallery/csslogo.webp']
+        url: 'https://github.com/Edgarzwj/flowboard',
+        description: '单文件、零依赖的 Miro 风格实时协作白板原型，基于 Canvas + 原生 JS。打开即画，适合头脑风暴与流程图梳理。',
+        techStack: ['/textures/gallery/htmllogo.webp', '/textures/gallery/jslogo.webp', '/textures/gallery/csslogo.webp']
     },
     {
         id: 'deaify',
-        title: 'DEAIFY',
+        title: 'DEAIFY · 去 AI 味',
         front: '/textures/gallery/deaify_przod.webp',
         painted: '/textures/gallery/deaify_przod_painted.webp',
         url: 'https://github.com/Edgarzwj/deaify',
-        description: '面向算法代码的「去 AI 化」技能套件，让 AI 生成/改写的代码读起来像人写的。TODO：替换真实文案。',
-        techStack: ['/textures/gallery/jslogo.webp', '/textures/gallery/htmllogo.webp', '/textures/gallery/csslogo.webp']
+        description: '面向算法与系统代码的「去 AI 化」工具套件，让 AI 生成或改写的代码读起来像人写的——预防与修复双管齐下。',
+        techStack: ['/textures/gallery/jslogo.webp', '/textures/gallery/htmllogo.webp']
     },
     {
-        id: 'noveltoscript',
-        title: 'NOVEL>SCRIPT',
+        id: 'dagongren-ledger',
+        title: '打工仁账本 · LEDGER',
+        front: '/textures/gallery/datapool_przod.webp',
+        painted: '/textures/gallery/datapool_przod_painted.webp',
+        url: 'https://github.com/Edgarzwj/dagongren-ledger',
+        description: '单文件离线个人记账 + 真实时薪工作台，手机/电脑通用、零依赖。看清自己每一分钟到底值多少钱。',
+        techStack: ['/textures/gallery/htmllogo.webp', '/textures/gallery/jslogo.webp', '/textures/gallery/csslogo.webp']
+    },
+    {
+        id: 'knowledge-reviews',
+        title: '知识综述 · REVIEWS',
+        front: '/textures/gallery/monetuneprzod.webp',
+        painted: '/textures/gallery/monetuneprzod_painted.webp',
+        url: 'https://github.com/Edgarzwj/knowledge-reviews',
+        description: '基于腾讯云知（乐享）知识库语义检索，自动生成结构化知识综述报告；单文件内联 HTML，开箱即用。',
+        techStack: ['/textures/gallery/htmllogo.webp', '/textures/gallery/jslogo.webp']
+    },
+    {
+        id: 'novel-to-script',
+        title: '小说转剧本 · NOVEL>SCRIPT',
         front: '/textures/gallery/noveltoscript_przod.webp',
         painted: '/textures/gallery/noveltoscript_przod_painted.webp',
         url: 'https://github.com/Edgarzwj/novel-to-script',
-        description: 'AI 小说转剧本工具，已开源。TODO：替换真实文案与截图。',
-        techStack: ['/textures/gallery/reactlogo.webp', '/textures/gallery/tailwindlogo.webp', '/textures/gallery/netlifylogo.webp']
+        description: 'AI 小说转剧本工具，七牛云实战项目。把长篇小说自动拆解为可拍摄的剧本结构。',
+        techStack: ['/textures/gallery/htmllogo.webp', '/textures/gallery/jslogo.webp']
     },
     {
-        id: 'datapool',
-        title: 'DATA POOL · 数据池',
-        front: '/textures/gallery/datapool_przod.webp',
-        painted: '/textures/gallery/datapool_przod_painted.webp',
-        url: 'https://github.com/Edgarzwj',
-        description: '数据池前端管理界面，维护 skill/ 规则库（design-rules、rules-index、design-systems）。TODO：替换真实链接。',
-        techStack: ['/textures/gallery/htmllogo.webp', '/textures/gallery/csslogo.webp', '/textures/gallery/jslogo.webp', '/textures/gallery/netlifylogo.webp']
+        id: 'recall',
+        title: 'RECALL · 决策引擎',
+        front: '/textures/gallery/timberkittyprzod.webp',
+        painted: '/textures/gallery/timberkittyprzod_painted.webp',
+        url: 'https://github.com/Edgarzwj/recall',
+        description: '本地优先、会复利增长的决策与经验引擎。把每一次决策与复盘沉淀为可检索的长期记忆。',
+        techStack: ['/textures/gallery/htmllogo.webp', '/textures/gallery/jslogo.webp', '/textures/gallery/csslogo.webp']
     },
 ];
 

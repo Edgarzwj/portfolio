@@ -21,11 +21,11 @@ export const translations = {
     aboutJourneySub: 'My path so far...',
     aboutSkills: 'SKILLS',
     aboutSkillsSub: 'Technologies I love working with',
-    aboutMotto1: '"Building games & tools',
-    aboutMotto2: 'that respect the player"',
+    aboutMotto1: '"Understand the world with math,',
+    aboutMotto2: 'build it with code"',
 
     // --- Hero tagline (3D) ---
-    heroTaglineZh: '< 独立游戏 & 全栈开发 />',
+    heroTaglineZh: '< 信息与计算科学 · 算法 & AI />',
   },
   zh: {
     // --- Navigation (DOM overlay) ---
@@ -42,11 +42,11 @@ export const translations = {
     aboutJourneySub: '我的来时路…',
     aboutSkills: '技能',
     aboutSkillsSub: '我钟爱的技术栈',
-    aboutMotto1: '“做尊重玩家的',
-    aboutMotto2: '游戏与工具”',
+    aboutMotto1: '“用数学理解世界，',
+    aboutMotto2: '用代码把它做出来”',
 
     // --- Hero tagline (3D) ---
-    heroTaglineZh: '< 独立游戏 & 全栈开发 />',
+    heroTaglineZh: '< 信息与计算科学 · 算法 & AI />',
   },
 };
 

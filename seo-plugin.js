@@ -1,11 +1,17 @@
 import { createClient } from '@sanity/client';
 
-const sanityClient = createClient({
-    projectId: 'kv5wjjmj',
-    dataset: 'production',
-    useCdn: true,
-    apiVersion: '2024-03-01',
-});
+const PROJECT_ID = 'YOUR_PROJECT_ID'; // 未配置 Sanity：插件退化为 no-op，直接返回 index.html 静态 SEO 内容
+const SANITY_ENABLED = PROJECT_ID !== 'YOUR_PROJECT_ID';
+
+// 仅在配置了合法 projectId 时才真正创建 client，避免 @sanity/client 校验非法 id 报错
+const sanityClient = SANITY_ENABLED
+    ? createClient({
+        projectId: PROJECT_ID,
+        dataset: 'production',
+        useCdn: true,
+        apiVersion: '2024-03-01',
+    })
+    : null;
 
 // Tech stack filename -> human-readable name mapping for JSON-LD
 const TECH_STACK_NAMES = {
@@ -41,10 +47,10 @@ function buildJsonLd(globalInfo, projects, studio, awards, faqList) {
     // --- 1. Person: Central node of the Knowledge Graph ---
     const person = {
         '@type': 'Person',
-        '@id': 'https://itomdev.com/#person',
-        name: 'Tomasz Szmajda',
-        alternateName: ['ITom', 'ITom Dev', 'Tomasz ITom Szmajda'],
-        url: 'https://itomdev.com',
+        '@id': 'https://edgarzwj.github.io/portfolio/#person',
+        name: '张万江 Edgar Zhang',
+        alternateName: ['Edgar', 'Edgar Zhang', '张万江 Edgar Zhang'],
+        url: 'https://edgarzwj.github.io/portfolio',
         jobTitle: 'Creative Frontend Developer',
         description: globalInfo?.aboutMe || 'Creative developer specializing in 3D web experiences.',
         knowsAbout: ['React', 'Three.js', 'JavaScript', 'TypeScript', 'GSAP', 'Next.js', 'WebGL', '3D Graphics', 'Web Development'],
@@ -62,21 +68,21 @@ function buildJsonLd(globalInfo, projects, studio, awards, faqList) {
     // --- 2. WebSite ---
     const website = {
         '@type': 'WebSite',
-        '@id': 'https://itomdev.com/#website',
-        url: 'https://itomdev.com',
-        name: globalInfo?.siteTitle || 'Tomasz "ITom" Szmajda | Creative 3D Portfolio',
-        description: globalInfo?.siteDescription || 'Interactive 3D Developer Portfolio by Tomasz Szmajda',
-        publisher: { '@id': 'https://itomdev.com/#person' }
+        '@id': 'https://edgarzwj.github.io/portfolio/#website',
+        url: 'https://edgarzwj.github.io/portfolio',
+        name: globalInfo?.siteTitle || '张万江 Edgar Zhang | Creative 3D Portfolio',
+        description: globalInfo?.siteDescription || 'Interactive 3D Developer Portfolio by 张万江 Edgar Zhang',
+        publisher: { '@id': 'https://edgarzwj.github.io/portfolio/#person' }
     };
     graph.push(website);
 
     // --- 3. ProfilePage ---
     const profilePage = {
         '@type': 'ProfilePage',
-        '@id': 'https://itomdev.com/#profilepage',
-        url: 'https://itomdev.com',
-        mainEntity: { '@id': 'https://itomdev.com/#person' },
-        about: { '@id': 'https://itomdev.com/#person' }
+        '@id': 'https://edgarzwj.github.io/portfolio/#profilepage',
+        url: 'https://edgarzwj.github.io/portfolio',
+        mainEntity: { '@id': 'https://edgarzwj.github.io/portfolio/#person' },
+        about: { '@id': 'https://edgarzwj.github.io/portfolio/#person' }
     };
     graph.push(profilePage);
 
@@ -84,7 +90,7 @@ function buildJsonLd(globalInfo, projects, studio, awards, faqList) {
     if (faqList && faqList.length > 0) {
         const faqPage = {
             '@type': 'FAQPage',
-            '@id': 'https://itomdev.com/#faq',
+            '@id': 'https://edgarzwj.github.io/portfolio/#faq',
             mainEntity: faqList.map(item => ({
                 '@type': 'Question',
                 name: item.question,
@@ -101,8 +107,8 @@ function buildJsonLd(globalInfo, projects, studio, awards, faqList) {
     if (projects && projects.length > 0) {
         graph.push({
             '@type': 'ItemList',
-            '@id': 'https://itomdev.com/#projectslist',
-            name: 'Portfolio Projects by Tomasz "ITom" Szmajda',
+            '@id': 'https://edgarzwj.github.io/portfolio/#projectslist',
+            name: 'Portfolio Projects by 张万江 Edgar Zhang',
             description: 'Selected web development projects showcasing React, Three.js, and creative frontend engineering.',
             numberOfItems: projects.length,
             itemListElement: projects.map((p, i) => ({
@@ -113,7 +119,7 @@ function buildJsonLd(globalInfo, projects, studio, awards, faqList) {
                     name: p.seoTitle || p.title,
                     description: p.seoDescription || p.description || '',
                     url: p.url || undefined,
-                    creator: { '@id': 'https://itomdev.com/#person' },
+                    creator: { '@id': 'https://edgarzwj.github.io/portfolio/#person' },
                     ...(p.techStack && p.techStack.length > 0 ? {
                         keywords: p.techStack.map(t => TECH_STACK_NAMES[t] || t).join(', ')
                     } : {}),
@@ -126,11 +132,11 @@ function buildJsonLd(globalInfo, projects, studio, awards, faqList) {
             const projectSlug = p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
             graph.push({
                 '@type': 'CreativeWork',
-                '@id': `https://itomdev.com/#project-${projectSlug}`,
+                '@id': `https://edgarzwj.github.io/portfolio/#project-${projectSlug}`,
                 name: p.seoTitle || p.title,
                 description: p.seoDescription || p.description || '',
                 url: p.url || undefined,
-                creator: { '@id': 'https://itomdev.com/#person' },
+                creator: { '@id': 'https://edgarzwj.github.io/portfolio/#person' },
                 ...(p.techStack && p.techStack.length > 0 ? {
                     keywords: p.techStack.map(t => TECH_STACK_NAMES[t] || t).join(', ')
                 } : {}),
@@ -153,66 +159,66 @@ function buildJsonLd(globalInfo, projects, studio, awards, faqList) {
 
                 graph.push({
                     '@type': 'VideoObject',
-                    '@id': `https://itomdev.com/#${studioSlug}`,
+                    '@id': `https://edgarzwj.github.io/portfolio/#${studioSlug}`,
                     name: s.seoTitle || s.title,
                     description: s.seoDescription || s.description || '',
                     url: s.url || undefined,
                     contentUrl: s.url || undefined,
                     ...(embedUrl ? { embedUrl } : {}),
-                    thumbnailUrl: s.thumbnailUrl || 'https://itomdev.com/og-image.webp',
+                    thumbnailUrl: s.thumbnailUrl || 'https://edgarzwj.github.io/portfolio/og-image.webp',
                     ...(s.duration ? { duration: `PT${s.duration.replace(':', 'M')}S` } : {}),
                     ...(s.date ? { uploadDate: formatIsoDate(s.date) } : {}),
                     ...(s.views ? { interactionStatistic: { '@type': 'InteractionCounter', interactionType: 'https://schema.org/WatchAction', userInteractionCount: s.views } } : {}),
-                    author: { '@id': 'https://itomdev.com/#person' },
+                    author: { '@id': 'https://edgarzwj.github.io/portfolio/#person' },
                 });
             } else if (s.platform === 'blog') {
                 graph.push({
                     '@type': 'Article',
-                    '@id': `https://itomdev.com/#${studioSlug}`,
+                    '@id': `https://edgarzwj.github.io/portfolio/#${studioSlug}`,
                     headline: s.seoTitle || s.title,
                     description: s.seoDescription || s.description || '',
                     url: s.url || undefined,
-                    image: s.thumbnailUrl || 'https://itomdev.com/og-image.webp',
+                    image: s.thumbnailUrl || 'https://edgarzwj.github.io/portfolio/og-image.webp',
                     ...(s.date ? { datePublished: formatIsoDate(s.date) } : {}),
                     ...(s.readTime ? { timeRequired: `PT${s.readTime.replace(' min', '')}M` } : {}),
-                    author: { '@id': 'https://itomdev.com/#person' },
+                    author: { '@id': 'https://edgarzwj.github.io/portfolio/#person' },
                 });
             } else if (s.platform === 'tiktok') {
                 graph.push({
                     '@type': 'VideoObject',
-                    '@id': `https://itomdev.com/#${studioSlug}`,
+                    '@id': `https://edgarzwj.github.io/portfolio/#${studioSlug}`,
                     name: s.seoTitle || s.title,
                     description: s.seoDescription || s.description || '',
                     url: s.url || undefined,
                     contentUrl: s.url || undefined,
-                    thumbnailUrl: s.thumbnailUrl || 'https://itomdev.com/og-image.webp',
+                    thumbnailUrl: s.thumbnailUrl || 'https://edgarzwj.github.io/portfolio/og-image.webp',
                     ...(s.date ? { uploadDate: formatIsoDate(s.date) } : {}),
                     ...(s.views ? { interactionStatistic: { '@type': 'InteractionCounter', interactionType: 'https://schema.org/WatchAction', userInteractionCount: s.views } } : {}),
                     ...(s.likes ? { aggregateRating: { '@type': 'AggregateRating', ratingCount: s.likes } } : {}),
-                    author: { '@id': 'https://itomdev.com/#person' },
+                    author: { '@id': 'https://edgarzwj.github.io/portfolio/#person' },
                 });
             } else if (s.platform === 'instagram' || s.platform === 'x' || s.platform === 'linkedin') {
                 graph.push({
                     '@type': 'SocialMediaPosting',
-                    '@id': `https://itomdev.com/#${studioSlug}`,
+                    '@id': `https://edgarzwj.github.io/portfolio/#${studioSlug}`,
                     headline: s.seoTitle || s.title,
                     description: s.seoDescription || s.description || '',
                     url: s.url || undefined,
-                    image: s.thumbnailUrl || 'https://itomdev.com/og-image.webp',
+                    image: s.thumbnailUrl || 'https://edgarzwj.github.io/portfolio/og-image.webp',
                     ...(s.date ? { datePublished: formatIsoDate(s.date) } : {}),
                     ...(s.likes ? { interactionStatistic: { '@type': 'InteractionCounter', interactionType: 'https://schema.org/LikeAction', userInteractionCount: s.likes } } : {}),
-                    author: { '@id': 'https://itomdev.com/#person' },
+                    author: { '@id': 'https://edgarzwj.github.io/portfolio/#person' },
                 });
             } else if (s.platform === 'codrops') {
                 graph.push({
                     '@type': 'Article',
-                    '@id': `https://itomdev.com/#${studioSlug}`,
+                    '@id': `https://edgarzwj.github.io/portfolio/#${studioSlug}`,
                     headline: s.seoTitle || s.title,
                     description: s.seoDescription || s.description || '',
                     url: s.url || undefined,
-                    image: s.thumbnailUrl || 'https://itomdev.com/og-image.webp',
+                    image: s.thumbnailUrl || 'https://edgarzwj.github.io/portfolio/og-image.webp',
                     ...(s.date ? { datePublished: formatIsoDate(s.date) } : {}),
-                    author: { '@id': 'https://itomdev.com/#person' },
+                    author: { '@id': 'https://edgarzwj.github.io/portfolio/#person' },
                 });
             }
         });
@@ -223,8 +229,8 @@ function buildJsonLd(globalInfo, projects, studio, awards, faqList) {
         const categoryLabels = { sotd: 'Site of the Day', sotm: 'Site of the Month', other: 'Honorable Mention' };
         graph.push({
             '@type': 'ItemList',
-            '@id': 'https://itomdev.com/#awardslist',
-            name: 'Web Design Awards received by Tomasz "ITom" Szmajda',
+            '@id': 'https://edgarzwj.github.io/portfolio/#awardslist',
+            name: 'Web Design Awards received by 张万江 Edgar Zhang',
             numberOfItems: awards.length,
             itemListElement: awards.map((a, i) => ({
                 '@type': 'ListItem',
@@ -236,7 +242,7 @@ function buildJsonLd(globalInfo, projects, studio, awards, faqList) {
                     url: a.url || undefined,
                     description: a.seoDescription || undefined,
                     award: categoryLabels[a.category] || a.category,
-                    creator: { '@id': 'https://itomdev.com/#person' },
+                    creator: { '@id': 'https://edgarzwj.github.io/portfolio/#person' },
                 }
             }))
         });
@@ -250,7 +256,7 @@ function buildJsonLd(globalInfo, projects, studio, awards, faqList) {
 
 // Helper to generate the llms.txt content in clean Markdown
 function buildLlmsTxt(globalInfo, projects, studio, awards, faqList) {
-    const siteTitle = globalInfo?.siteTitle || 'Tomasz "ITom" Szmajda | Creative 3D Portfolio';
+    const siteTitle = globalInfo?.siteTitle || '张万江 Edgar Zhang | Creative 3D Portfolio';
     const siteDescription = globalInfo?.siteDescription || 'Interactive 3D Developer Portfolio';
     const aboutMe = globalInfo?.aboutMe || 'I am a creative developer specializing in 3D web experiences.';
 
@@ -267,7 +273,7 @@ function buildLlmsTxt(globalInfo, projects, studio, awards, faqList) {
         content += `## Selected Portfolio Projects\n`;
         projects.forEach(p => {
             const tech = p.techStack ? ` (Tech: ${p.techStack.map(t => TECH_STACK_NAMES[t] || t).join(', ')})` : '';
-            content += `- [${p.seoTitle || p.title}](${p.url || 'https://itomdev.com'}): ${p.seoDescription || p.description || ''}${tech}\n`;
+            content += `- [${p.seoTitle || p.title}](${p.url || 'https://edgarzwj.github.io/portfolio'}): ${p.seoDescription || p.description || ''}${tech}\n`;
         });
         content += `\n`;
     }
@@ -275,7 +281,7 @@ function buildLlmsTxt(globalInfo, projects, studio, awards, faqList) {
     if (studio && studio.length > 0) {
         content += `## Studio Content & Publications\n`;
         studio.forEach(s => {
-            content += `- [${s.seoTitle || s.title} (${s.platform})](${s.url || 'https://itomdev.com'}): ${s.seoDescription || s.description || ''}\n`;
+            content += `- [${s.seoTitle || s.title} (${s.platform})](${s.url || 'https://edgarzwj.github.io/portfolio'}): ${s.seoDescription || s.description || ''}\n`;
         });
         content += `\n`;
     }
@@ -285,7 +291,7 @@ function buildLlmsTxt(globalInfo, projects, studio, awards, faqList) {
         const categoryLabels = { sotd: 'Site of the Day', sotm: 'Site of the Month', other: 'Honorable Mention' };
         awards.forEach(a => {
             const category = categoryLabels[a.category] || a.category;
-            content += `- **${category}** — [${a.seoTitle || a.title}](${a.url || 'https://itomdev.com'}): Awarded on ${a.date || 'unknown'}. ${a.seoDescription || ''}\n`;
+            content += `- **${category}** — [${a.seoTitle || a.title}](${a.url || 'https://edgarzwj.github.io/portfolio'}): Awarded on ${a.date || 'unknown'}. ${a.seoDescription || ''}\n`;
         });
         content += `\n`;
     }
@@ -305,6 +311,11 @@ export function generateSeoHtml() {
     let cachedLlmsContent = '';
 
     async function getLlmsContent() {
+        if (!sanityClient) {
+            // Sanity 已禁用：返回静态 llms.txt 占位，不发起任何网络请求
+            cachedLlmsContent = '# 张万江 Edgar Zhang\n> Creative Developer\n';
+            return cachedLlmsContent;
+        }
         if (!cachedLlmsContent) {
             try {
                 const [globalInfo, projects, studio, awards, faqList] = await Promise.all([
@@ -317,7 +328,7 @@ export function generateSeoHtml() {
                 cachedLlmsContent = buildLlmsTxt(globalInfo, projects, studio, awards, faqList);
             } catch (e) {
                 console.error('SEO Plugin Error: Failed to fetch Sanity data for llms.txt', e);
-                cachedLlmsContent = `# Tomasz Szmajda\n> Creative Developer\n`;
+                cachedLlmsContent = `# 张万江 Edgar Zhang\n> Creative Developer\n`;
             }
         }
         return cachedLlmsContent;
@@ -342,6 +353,8 @@ export function generateSeoHtml() {
         // This hook runs when Vite generates or serves index.html
         async transformIndexHtml(html) {
             try {
+                // Sanity 已禁用：直接返回 index.html 静态内容，不做任何注入
+                if (!sanityClient) return html;
                 // Fetch all data in parallel
                 const [globalInfo, projects, studio, awards, faqList] = await Promise.all([
                     sanityClient.fetch(`*[_id == "globalInfo"][0]`),
@@ -352,7 +365,7 @@ export function generateSeoHtml() {
                 ]);
 
                 // Fallback values if globalInfo is not yet created in Sanity
-                const siteTitle = globalInfo?.siteTitle || 'ITom - Creative Developer';
+                const siteTitle = globalInfo?.siteTitle || 'Edgar - Creative Developer';
                 const siteDescription = globalInfo?.siteDescription || 'Interactive 3D portfolio of a creative web developer.';
                 const aboutMe = globalInfo?.aboutMe || 'I am a creative developer specializing in 3D web experiences.';
 

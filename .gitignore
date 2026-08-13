@@ -10,6 +10,12 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+dist.bak
+dist_old
+dist-root
+out-root
+build-cloud
+cloud-*
 *.local
 
 # dotenv environment variables file

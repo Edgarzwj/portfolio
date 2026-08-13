@@ -355,7 +355,7 @@ const IntroMilestone = ({ z, scrollProgressRef }) => {
                 anchorY="middle"
                 font="/fonts/RubikScribble-Regular.ttf"
             >
-                EDGAR ZWJ
+                EDGAR ZHANG
             </Text>
 
             {/* Subtitle - Brand (spreads right) */}
@@ -420,7 +420,7 @@ const AWARDS_DATA = {
     featured: {
         id: 'award-featured',
         layout: 'certificate_grid',
-        title: 'Featured Projects Collection',
+        title: 'Highlights · 亮点',
         items: [],
         platformConfig: {
             label: 'HONOR',
@@ -431,10 +431,16 @@ const AWARDS_DATA = {
     sotd: {
         id: 'award-sotd',
         layout: 'certificate_grid',
-        title: 'Site of the Day Awards',
-        items: [],
+        title: 'National Honors · 国家级荣誉',
+        items: [
+            { label: '美国大学生数学建模竞赛', date: '国际二等奖 · Honorable Mention', image: '', url: '#' },
+            { label: '“挑战杯”课外学术科技作品竞赛', date: '国家级三等奖', image: '', url: '#' },
+            { label: '全国高校商业精英挑战赛', date: '全国二等奖', image: '', url: '#' },
+            { label: '“中国中车杯”可再生能源科技作品竞赛', date: '全国三等奖', image: '', url: '#' },
+            { label: 'iCAN 国际创新创业大赛 · AI 应用挑战赛', date: '全国三等奖', image: '', url: '#' },
+        ],
         platformConfig: {
-            label: 'AWARD',
+            label: 'NATIONAL',
             color: '#1a1a1a',
             icon: '🏆'
         }
@@ -442,10 +448,14 @@ const AWARDS_DATA = {
     sotm: {
         id: 'award-sotm',
         layout: 'certificate_grid',
-        title: 'Site of the Month Awards',
-        items: [],
+        title: 'Provincial Honors · 省级荣誉',
+        items: [
+            { label: '“挑战杯”黑龙江省课外学术科技作品竞赛', date: '省一等奖', image: '', url: '#' },
+            { label: '东三省数学建模竞赛', date: '省级一等奖', image: '', url: '#' },
+            { label: '中国国际大学生创新大赛（2024）', date: '黑龙江省赛区铜奖', image: '', url: '#' },
+        ],
         platformConfig: {
-            label: 'AWARD',
+            label: 'PROVINCIAL',
             color: '#1a1a1a',
             icon: '📅'
         }
@@ -453,10 +463,17 @@ const AWARDS_DATA = {
     other: {
         id: 'award-other',
         layout: 'certificate_grid',
-        title: 'Other Awards',
-        items: [],
+        title: 'Research & Innovation · 科研与双创',
+        items: [
+            { label: '国家级重点大创项目', date: '核心成员', image: '', url: '#' },
+            { label: 'IFAC 会议论文', date: '参与作者 · 1 篇', image: '', url: '#' },
+            { label: '发明专利', date: '发明人 · 2 项', image: '', url: '#' },
+            { label: '软件著作权', date: '3 项', image: '', url: '#' },
+            { label: '神仙湖创新创业大赛（香港中文大学）', date: '入围决赛', image: '', url: '#' },
+            { label: '华为昇腾创新创业大赛（清华园）', date: '第十名', image: '', url: '#' },
+        ],
         platformConfig: {
-            label: 'PRESTIGE',
+            label: 'RESEARCH',
             color: '#1a1a1a',
             icon: '👑'
         }
