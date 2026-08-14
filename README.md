@@ -1,95 +1,68 @@
-# 🎨 ITom Dev | Interactive 3D WebGL Portfolio
+# Edgar（张万江）| 3D 交互式作品集
 
-<div align="center">
-  <img src="https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react" alt="React" />
-  <img src="https://img.shields.io/badge/Three.js-0.182-black?style=for-the-badge&logo=threedotjs" alt="Three.js" />
-  <img src="https://img.shields.io/badge/R3F-9.4-purple?style=for-the-badge&logo=react" alt="React Three Fiber" />
-  <img src="https://img.shields.io/badge/GSAP-3.14-green?style=for-the-badge&logo=greensock" alt="GSAP" />
-  <img src="https://img.shields.io/badge/Vite-7.2-646CFF?style=for-the-badge&logo=vite" alt="Vite" />
-</div>
+> 基于 **React 19 + React Three Fiber + Three.js + GSAP + Vite** 打造的创意 3D 开发者作品集。
+> 一座可以"走"进去的手绘风格长廊：推开每一扇门，进入关于我、作品画廊、工作室与联系的房间。
 
-<br/>
+本仓库是 [Tomasz "ITom" Szmajda](https://itomdev.com) 开源作品集模板的二次创作版本，
+站点内所有文案、项目与个人信息均已替换为作者 **Edgar（张万江）** 的真实内容。
 
-Welcome to the open-source repository of **Tomasz "ITom" Szmajda's** interactive 3D Web Developer portfolio. This project pushes the limits of modern web technologies by blending spatial WebGL computing, complex React ecosystems, and highly optimized frontend engineering.
+## ✨ 技术栈
 
-> [!NOTE]
-> Ensure hardware acceleration is enabled in your browser settings to experience the smooth 60 FPS high-tier rendering of this application.
+- **React 19** + **React Router v7** — 应用框架与虚拟路由（URL 与 3D 房间状态同步）
+- **React Three Fiber / Three.js** — 3D 场景、可步行长廊、房间与手绘纹理
+- **@react-three/drei / postprocessing** — 相机控制、后期与性能监控
+- **GSAP / ScrollTrigger** — 滚动叙事、油漆揭示（paint-reveal）过渡、卡片翻转动画
+- **Vite 7** — 构建与开发服务器
+- **Sanity**（可选）— 无头 CMS，未配置时自动回退本地 `FALLBACK` 数据
 
-## 🚀 Key Performance Architectures (2026 Standards)
+## 🚀 本地运行
 
-This application is strictly optimized for cross-device operability, achieving zero lag spikes even on mobile processors through several bespoke architectural implementations:
+```bash
+# 1. 安装依赖（要求 Node.js 20+）
+npm install
 
-1. **Invisible Semantic SEO Fallback:** Bypasses WebGL canvas SEO limitations via strategic `sr-only-seo` indexing DOM injections, rendering fully visible semantic trees to native search-engine crawlers without mounting heavy bundles.
-2. **Asynchronous Shader Compilation:** Enforces `gl.compileAsync` during the Preloading phase inside a hidden `RoomWarmup` Suspense boundary. This allows Three.js to pre-compile complex materials asynchronously without blocking the main React update thread.
-3. **Baked Global Tinting & Lighing Extraction:** Replaced real-time WebGL shadow maps and infinite light rays with baked-in global textures (`apply_global_tint.js`), dropping the GPU compute overhead entirely while maintaining visual depth.
-4. **DOM Mutation Bypassing:** Critical animation properties (like SVG preloader states tracking 130+ concurrent HTTP texture requests) write directly to the `ref.current.style`, intentionally bypassing React’s `setState` render cycles to conserve CPU.
-5. **Adaptive Device Tiering:** Auto-detects `navigator.deviceMemory`, hardware concurrency, and viewport sizes to scale WebGL resolutions (`dpr`), antialiasing algorithms, and texture loading strictness on the fly.
+# 2. 启动开发服务器
+npm run dev
 
----
-
-## 🏗️ 3D Scene Architecture
-
-```mermaid
-graph TD;
-    A[App.jsx] --> B[SceneProvider Context];
-    A --> C[canvas];
-    A --> D[2D DOM / SEO / HUD];
-    
-    C --> E[Experience.jsx];
-    E --> F[RoomWarmup Pre-compiler];
-    E --> G[Infinite Corridor Manager];
-    
-    G --> H[Gallery Room];
-    G --> I[Studio Room];
-    G --> J[Contact Room];
-    G --> K[About Room];
-    
-    H -.-> L{useTexture & useGLTF};
-    L -.-> M(GPU Memory);
+# 3. 生产构建与本地预览
+npm run build
+npm run preview
 ```
 
----
+> 提示：项目大量使用高分辨率手绘纹理，本地首次加载可能稍慢；性能与加载评估请始终使用 `build` + `preview`。
 
-## 🛠️ Local Development Setup
+## 🗂️ 项目结构
 
-To run this application natively on your local machine:
+```
+src/
+├── components/canvas/        # 3D 场景（长廊 + 四个房间 + 背景）
+│   ├── corridor/             # 可步行走廊、门、Hero 文字
+│   ├── rooms/                # About / Gallery / Studio / Contact
+│   └── shaders/              # 自定义 GLSL（油漆揭示等）
+├── components/ui/            # DOM 叠层（导航、地图、音频控制、无障碍层）
+├── context/                  # 全局状态（场景、音频、成就）
+├── hooks/                    # useDocumentMeta、useSanityData 等
+├── i18n/                     # 中英双语
+└── config/                   # Sanity 配置、纹理预加载清单
+```
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/ITomPoland/portfolio-itom.git
-   cd portfolio-itom
-   ```
+## 📦 内容来源
 
-2. **Install dependencies:**
-   Make sure you are on Node.js v20+.
-   ```bash
-   npm install
-   ```
+作品集中展示的项目均来自作者公开的 GitHub：[github.com/Edgarzwj](https://github.com/Edgarzwj)
 
-3. **Start the local Dev Server:**
-   ```bash
-   npm run dev
-   ```
+- **一太刀 One Strike** — 像素水墨风武士浏览器游戏（移动端）
+- **deaify** — 去 AI 化的代码 / 文本工具套件（算法向）
+- **novel-to-script** — AI 小说转剧本工具
+- **flowboard** — 单文件、零依赖的实时协作白板
+- **dagongren-ledger** — 单文件离线记账 + 真实时薪工作台
+- **asr-learning-path** — ASR 语音识别学习路线
 
-> [!IMPORTANT]
-> Since this project heavily utilizes `vite-plugin-compression` and hundreds of high-res textures, your initial local load might take a few seconds as the dev-server buffers asset delivery. For performance testing, always run `npm run build && npm run preview`.
+## 🛰️ 部署
 
-## 🤝 Contributing & Feedback
+纯静态产物，可部署到任意静态托管（GitHub Pages / Vercel / Netlify / 对象存储）。
 
-All PRs improving the shader physics, 3D math logic, or component memoization runtimes are welcome. Please refer to our new `.github` Issue and Pull Request templates when submitting!
+## ⚠️ 版权与素材
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingRoom`)
-
-
-## License
-
-The code in this repository is licensed under the [MIT License](LICENSE). 
-**Note:** All personal assets, 3D textures, images, and copywriting are copyright of Tomasz Szmajda and may not be reused or reproduced without explicit permission.
-3. Commit your Changes (`git commit -m 'feat: Added realistic liquid simulation to Contact Room'`)
-4. Push to the Branch (`git push origin feature/AmazingRoom`)
-5. Open a Pull Request
-
----
-
-*Designed and Developed by [Tomasz Szmajda (ITom Dev)](https://itomdev.com).*
+- 代码基于 MIT 许可（详见 `LICENSE`）。
+- 模板中的**手绘纹理、插画、3D 素材与原模板文案版权归 Tomasz Szmajda 所有**，
+  本仓库仅作二次创作与学习用途。若用于公开或商业展示，请替换为自有素材。

@@ -12,28 +12,28 @@ import { useScene } from '../context/SceneContext';
 const ROOM_META = {
     null: {
         path: '/',
-        title: 'ITom — Creative 3D Portfolio',
-        description: 'Interactive 3D developer portfolio by Tomasz "ITom" Szmajda. Explore WebGL experiments, React projects & GSAP animations in a hand-drawn gallery.',
+        title: 'Edgar（张万江）| 3D 交互式作品集',
+        description: 'Edgar（张万江）的交互式 3D 开发者作品集：独立游戏开发、全栈工程与开源工具，基于 React Three Fiber / Three.js / GSAP 打造的手绘风格画廊。',
     },
     about: {
         path: '/about',
-        title: 'About Me — ITom Portfolio',
-        description: 'Learn about Tomasz "ITom" Szmajda — a creative frontend developer specializing in 3D web experiences, React, Three.js, and GSAP animations.',
+        title: '关于我 — Edgar 作品集',
+        description: '认识 Edgar（张万江）：独立游戏 & 全栈开发者，专注算法、机器学习与交互式 Web 体验。',
     },
     gallery: {
         path: '/gallery',
-        title: 'Gallery & Projects — ITom Portfolio',
-        description: 'Browse the interactive 3D gallery of web development projects by ITom. Each project is displayed as a hand-drawn card you can flip and explore.',
+        title: '作品画廊 — Edgar 作品集',
+        description: '浏览 Edgar 的交互式 3D 作品画廊：一太刀、deaify、novel-to-script 等真实开源项目。',
     },
     studio: {
         path: '/studio',
-        title: 'The Studio — ITom Portfolio',
-        description: 'Explore ITom\'s content studio — YouTube videos, blog posts, and TikToks displayed on floating monitors in an immersive 3D space.',
+        title: '工作室 — Edgar 作品集',
+        description: '探索 Edgar 的内容工作室：开发日志、文章与短视频，呈现在沉浸式 3D 空间中。',
     },
     contact: {
         path: '/contact',
-        title: 'Contact — ITom Portfolio',
-        description: 'Get in touch with Tomasz "ITom" Szmajda. Find social media links and contact information in this interactive 3D contact room.',
+        title: '联系 — Edgar 作品集',
+        description: '联系 Edgar（张万江）。在交互式 3D 联系房间中找到 GitHub、邮箱与社交链接。',
     },
 };
 

@@ -7,6 +7,7 @@ import EmptyCorridor from './entrance/EmptyCorridor';
 import TeleportRoom from './corridor/TeleportRoom';
 import RoomWarmup from './corridor/RoomWarmup';
 import useInfiniteCamera from '../../hooks/useInfiniteCamera';
+import AmbientDust from './corridor/AmbientDust';
 import SignSystem from './entrance/SignSystem';
 import LanguageFrame from './entrance/LanguageFrame';
 import { useScene } from '../../context/SceneContext';
@@ -109,6 +110,7 @@ const Experience = ({ isLoaded, onSceneReady, performanceTier }) => {
             )}
 
             {/* === INFINITE CORRIDOR (segment -1 SegmentDoors hidden during entrance) === */}
+            <AmbientDust />
             <InfiniteCorridorManager
                 onDoorEnter={handleDoorEnter}
                 hideDoorsForSegments={hasEntered ? [] : [-1]} // Hide segment -1's doors until entered

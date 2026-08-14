@@ -684,7 +684,7 @@ const AwardsMilestone = ({ z, scrollProgressRef }) => {
                     anchorY="middle"
                     font="/fonts/CabinSketch-Bold.ttf"
                 >
-                    SOTD
+                    国家级
                 </Text>
                 {/* AWARD COUNT */}
                 <Text
@@ -745,7 +745,7 @@ const AwardsMilestone = ({ z, scrollProgressRef }) => {
                     anchorY="middle"
                     font="/fonts/CabinSketch-Bold.ttf"
                 >
-                    SOTM
+                    省级
                 </Text>
                 {/* AWARD COUNT */}
                 <Text
@@ -805,7 +805,7 @@ const AwardsMilestone = ({ z, scrollProgressRef }) => {
                     anchorY="middle"
                     font="/fonts/CabinSketch-Bold.ttf"
                 >
-                    OTHER
+                    科研双创
                 </Text>
                 {/* AWARD COUNT */}
                 <Text
@@ -949,7 +949,7 @@ const JourneyMilestone = ({ z, scrollProgressRef }) => {
                     anchorY="middle"
                     font="/fonts/CabinSketch-Bold.ttf"
                 >
-                    2025-NOW
+                    本科 · 2021-2025
                 </Text>
             </group>
 
@@ -972,7 +972,7 @@ const JourneyMilestone = ({ z, scrollProgressRef }) => {
                     anchorY="middle"
                     font="/fonts/CabinSketch-Bold.ttf"
                 >
-                    2023-NOW
+                    独立开发 · 2025-NOW
                 </Text>
             </group>
         </group>

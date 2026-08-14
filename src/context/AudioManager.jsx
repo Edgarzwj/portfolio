@@ -131,9 +131,21 @@ export const AudioProvider = ({ children }) => {
                 delete activeSounds.current[soundName];
             },
             fade: (duration = 1000) => {
-                // For now just stop
-                audio.pause();
-                delete activeSounds.current[soundName];
+                const startVol = audio.volume;
+                const startTime = performance.now();
+                const step = () => {
+                    const elapsed = performance.now() - startTime;
+                    const t = Math.min(1, elapsed / duration);
+                    audio.volume = startVol * (1 - t);
+                    if (t < 1) {
+                        requestAnimationFrame(step);
+                    } else {
+                        audio.pause();
+                        audio.currentTime = 0;
+                        delete activeSounds.current[soundName];
+                    }
+                };
+                requestAnimationFrame(step);
             }
         };
     }, [isMuted, globalVolume]);

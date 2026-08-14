@@ -66,13 +66,13 @@ const FALLBACK_PROJECTS = [
         techStack: ['/textures/gallery/htmllogo.webp', '/textures/gallery/jslogo.webp', '/textures/gallery/csslogo.webp']
     },
     {
-        id: 'knowledge-reviews',
-        title: '知识综述 · REVIEWS',
-        front: '/textures/gallery/monetuneprzod.webp',
-        painted: '/textures/gallery/monetuneprzod_painted.webp',
-        url: 'https://github.com/Edgarzwj/knowledge-reviews',
-        description: '基于腾讯云知（乐享）知识库语义检索，自动生成结构化知识综述报告；单文件内联 HTML，开箱即用。',
-        techStack: ['/textures/gallery/htmllogo.webp', '/textures/gallery/jslogo.webp']
+        id: 'onestrike',
+        title: '一太刀 · ONE STRIKE',
+        front: '/textures/gallery/onestrike_przod.webp',
+        painted: '/textures/gallery/onestrike_przod_painted.webp',
+        url: 'https://github.com/Edgarzwj',
+        description: '像素水墨风武士浏览器游戏，主打移动端。一刀定胜负的极简玩法，内置「支持作者」变现通道。',
+        techStack: ['/textures/gallery/jslogo.webp', '/textures/gallery/htmllogo.webp', '/textures/gallery/csslogo.webp']
     },
     {
         id: 'novel-to-script',
@@ -84,13 +84,13 @@ const FALLBACK_PROJECTS = [
         techStack: ['/textures/gallery/htmllogo.webp', '/textures/gallery/jslogo.webp']
     },
     {
-        id: 'recall',
-        title: 'RECALL · 决策引擎',
-        front: '/textures/gallery/timberkittyprzod.webp',
-        painted: '/textures/gallery/timberkittyprzod_painted.webp',
-        url: 'https://github.com/Edgarzwj/recall',
-        description: '本地优先、会复利增长的决策与经验引擎。把每一次决策与复盘沉淀为可检索的长期记忆。',
-        techStack: ['/textures/gallery/htmllogo.webp', '/textures/gallery/jslogo.webp', '/textures/gallery/csslogo.webp']
+        id: 'asr-learning-path',
+        title: 'ASR 学习路线 · LEARNING PATH',
+        front: '/textures/gallery/youngmultiprzod.webp',
+        painted: '/textures/gallery/youngmultiprzod_painted.webp',
+        url: 'https://github.com/Edgarzwj/asr-learning-path',
+        description: 'ASR 语音识别学习路线与每日打卡记录，配套完整技术教材，系统梳理从信号到模型的路径。',
+        techStack: ['/textures/gallery/htmllogo.webp', '/textures/gallery/jslogo.webp']
     },
 ];
 

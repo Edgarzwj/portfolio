@@ -13,6 +13,8 @@ import NavigationUI from './components/ui/NavigationUI';
 import LanguageToggleButton from './components/ui/LanguageToggleButton';
 import GlobalOverlay from './components/ui/GlobalOverlay';
 import ScreenReaderOverlay from './components/ui/ScreenReaderOverlay';
+import ResponsiveCamera from './components/canvas/ResponsiveCamera';
+import CustomCursor from './components/dom/CustomCursor';
 import { useDocumentMeta } from './hooks/useDocumentMeta';
 import posthog from 'posthog-js';
 import { loadSanityData } from './hooks/useSanityData';
@@ -187,6 +189,9 @@ function AppContent() {
               {/* Advanced FPS & Performance Monitor */}
               {/* <Perf position="top-left" minimal={false} /> */}
 
+              {/* Responsive FOV — fixes mobile/portrait scene clipping */}
+              <ResponsiveCamera />
+
               <Suspense fallback={null}>
                 <Experience
                   isLoaded={isLoaded}
@@ -203,6 +208,7 @@ function AppContent() {
             <>
               <NavigationUI />
               <LanguageToggleButton />
+              <CustomCursor />
               <GlobalOverlay />
               <PaperTransition />
               <ScreenReaderOverlay />

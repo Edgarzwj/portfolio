@@ -26,11 +26,11 @@ const ScreenReaderOverlay = () => {
 
             {/* Main accessible navigation */}
             <nav id="sr-main-nav" className="sr-only" aria-label="Portfolio rooms">
-                <h1>ITom — Creative Developer Portfolio</h1>
+                <h1>Edgar（张万江）| 3D 交互式作品集</h1>
                 <h2>Portfolio Navigation</h2>
 
                 {!hasEntered && (
-                    <p>Welcome to ITom's interactive 3D portfolio. Click or press Enter on the doors to enter.</p>
+                    <p>欢迎来到 Edgar（张万江）的交互式 3D 作品集。点击或按回车打开门进入。</p>
                 )}
 
                 {hasEntered && !isInRoom && (
@@ -118,7 +118,7 @@ const ScreenReaderOverlay = () => {
                         {currentRoom === 'contact' && (
                             <div aria-label="Contact room content">
                                 <h3>Contact Me</h3>
-                                <p>Find my social media links displayed as floating barrels. Click to visit my profiles on LinkedIn, GitHub, and other platforms.</p>
+                                <p>在漂浮的木桶上找到我的社交链接。点击即可访问我的 GitHub、邮箱与社交平台。</p>
                             </div>
                         )}
                         {currentRoom === 'studio' && (
